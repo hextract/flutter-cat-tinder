@@ -26,5 +26,7 @@ Simple Flutter app which allows you to swipe cats in "Tinder-like" form.
 ![assets/readme/screenshots/1.jpg](assets/readme/screenshots/1.jpg)
 ![assets/readme/screenshots/2.jpg](assets/readme/screenshots/2.jpg)
 ![assets/readme/screenshots/3.jpg](assets/readme/screenshots/3.jpg)
+![assets/readme/screenshots/4.jpg](assets/readme/screenshots/4.jpg)
+![assets/readme/screenshots/5.jpg](assets/readme/screenshots/5.jpg)
 
-## [Download](https://github.com/h4x4d/flutter-cat-tinder/blob/7a929bd4f870b563736b9981c3235ffae2d1bc88/release/cat-tinder-1.0.0.apk)
+## [Download](https://github.com/hextract/flutter-cat-tinder/blob/7003f485124438a96604ff5055126c722d6fc8c2/release/cat-tinder-2.0.0.apk)

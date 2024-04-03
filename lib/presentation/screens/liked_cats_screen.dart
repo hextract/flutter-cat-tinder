@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../../domain/entities/cat.dart';
 import '../bloc/liked_cats/liked_cats_bloc.dart';
 import '../bloc/liked_cats/liked_cats_event.dart';
 import '../bloc/liked_cats/liked_cats_state.dart';
@@ -28,7 +29,7 @@ class _LikedCatsScreenState extends State<LikedCatsScreen> {
       appBar: AppBar(
         title: const Text('Liked Cats'),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF64B5F6)),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -39,17 +40,12 @@ class _LikedCatsScreenState extends State<LikedCatsScreen> {
               showDialog(
                 context: context,
                 builder: (_) => AlertDialog(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16)),
-                  title: const Text('Error',
-                      style: TextStyle(color: Color(0xFF1976D2))),
-                  content: Text(state.error!,
-                      style: Theme.of(context).textTheme.bodyLarge),
+                  title: const Text('Error'),
+                  content: Text(state.error!, style: Theme.of(context).textTheme.bodyLarge),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(context),
-                      child: const Text('OK',
-                          style: TextStyle(color: Color(0xFF64B5F6))),
+                      child: const Text('OK'),
                     ),
                   ],
                 ),
@@ -59,140 +55,130 @@ class _LikedCatsScreenState extends State<LikedCatsScreen> {
           },
           builder: (context, state) {
             if (_isLoading) {
-              return const Center(
-                  child: LinearProgressIndicator(color: Color(0xFF64B5F6)));
+              return const Center(child: LinearProgressIndicator());
             }
-            final validSelectedBreed =
-                state.availableBreeds.contains(state.selectedBreed)
-                    ? state.selectedBreed
-                    : null;
-
             return Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Theme(
-                    data: Theme.of(context).copyWith(
-                      canvasColor: Colors.white,
-                      highlightColor: Colors.transparent,
-                      splashColor: Colors.transparent,
-                    ),
-                    child: DropdownButtonFormField<String>(
-                      value: validSelectedBreed,
-                      // Используем валидное значение
-                      hint: const Text('Filter by breed'),
-                      items: [
-                        const DropdownMenuItem(value: null, child: Text('All')),
-                        ...state.availableBreeds
-                            .map((breed) => DropdownMenuItem(
-                                  value: breed,
-                                  child: Text(breed,
-                                      style: TextStyle(
-                                          color: validSelectedBreed == breed
-                                              ? const Color(0xFF64B5F6)
-                                              : null)),
-                                )),
-                      ],
-                      onChanged: (value) => context
-                          .read<LikedCatsBloc>()
-                          .add(FilterLikedCatsEvent(value)),
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide:
-                                const BorderSide(color: Color(0xFF1976D2))),
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide:
-                                const BorderSide(color: Color(0xFF64B5F6))),
-                        filled: true,
-                        fillColor: Colors.white,
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12),
-                      ),
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ),
+                _BreedFilter(
+                  selectedBreed: state.availableBreeds.contains(state.selectedBreed) ? state.selectedBreed : null,
+                  availableBreeds: state.availableBreeds,
+                  onChanged: (value) => context.read<LikedCatsBloc>().add(FilterLikedCatsEvent(value)),
                 ),
-                Expanded(
-                  child: state.cats.isEmpty
-                      ? Center(
-                          child: Text('No liked cats yet',
-                              style: Theme.of(context).textTheme.bodyLarge))
-                      : ListView.builder(
-                          itemCount: state.cats.length,
-                          itemBuilder: (context, index) {
-                            if (index >= state.cats.length) {
-                              return const SizedBox.shrink();
-                            }
-                            final cat = state.cats[index];
-                            return Dismissible(
-                              key: Key(cat.id),
-                              direction: DismissDirection.endToStart,
-                              onDismissed: (_) => context
-                                  .read<LikedCatsBloc>()
-                                  .add(RemoveLikedCatEvent(cat.id)),
-                              background: Container(
-                                color: const Color(0xFF64B5F6),
-                                alignment: Alignment.centerRight,
-                                padding: const EdgeInsets.only(right: 20),
-                                child: const Icon(Icons.delete,
-                                    color: Colors.white),
-                              ),
-                              child: GestureDetector(
-                                onTap: () => Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) =>
-                                            DetailScreen(catData: cat))),
-                                child: Card(
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 8),
-                                  child: ListTile(
-                                    leading: ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: SizedBox(
-                                        width: 60,
-                                        height: 60,
-                                        child: CachedNetworkImage(
-                                          imageUrl: cat.url,
-                                          fit: BoxFit.cover,
-                                          placeholder: (context, url) =>
-                                              const Center(
-                                            child: SizedBox(
-                                              width: 24,
-                                              height: 24,
-                                              child: CircularProgressIndicator(
-                                                  color: Color(0xFF64B5F6),
-                                                  strokeWidth: 2),
-                                            ),
-                                          ),
-                                          errorWidget: (context, url, error) =>
-                                              const Icon(Icons.error,
-                                                  color: Colors.red),
-                                        ),
-                                      ),
-                                    ),
-                                    title: Text(cat.breedName,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium),
-                                    subtitle: Text(
-                                        'Liked: ${cat.likedAt!.toString().substring(0, 16)}',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyLarge),
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                ),
+                _CatList(cats: state.cats),
               ],
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+class _BreedFilter extends StatelessWidget {
+  final String? selectedBreed;
+  final List<String> availableBreeds;
+  final ValueChanged<String?> onChanged;
+
+  const _BreedFilter({
+    required this.selectedBreed,
+    required this.availableBreeds,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: DropdownButtonFormField<String>(
+        value: selectedBreed,
+        hint: Text('Filter by breed', style: Theme.of(context).textTheme.bodyMedium),
+        items: [
+          DropdownMenuItem(value: null, child: Text('All', style: Theme.of(context).textTheme.bodyMedium)),
+          ...availableBreeds.map((breed) => DropdownMenuItem(
+            value: breed,
+            child: Text(
+              breed,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: selectedBreed == breed ? Theme.of(context).primaryColor : null,
+              ),
+            ),
+          )),
+        ],
+        onChanged: onChanged,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Theme.of(context).primaryColor),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Theme.of(context).iconTheme.color!),
+          ),
+          filled: true,
+          fillColor: Theme.of(context).scaffoldBackgroundColor,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        ),
+        style: Theme.of(context).textTheme.bodyMedium,
+      ),
+    );
+  }
+}
+
+class _CatList extends StatelessWidget {
+  final List<Cat> cats;
+
+  const _CatList({required this.cats});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: cats.isEmpty
+          ? Center(child: Text('No liked cats yet', style: Theme.of(context).textTheme.bodyLarge))
+          : ListView.builder(
+        itemCount: cats.length,
+        itemBuilder: (context, index) {
+          if (index >= cats.length) return const SizedBox.shrink();
+          final cat = cats[index];
+          return Dismissible(
+            key: Key(cat.id),
+            direction: DismissDirection.endToStart,
+            onDismissed: (_) => context.read<LikedCatsBloc>().add(RemoveLikedCatEvent(cat.id)),
+            background: Container(
+              color: Theme.of(context).iconTheme.color,
+              alignment: Alignment.centerRight,
+              padding: const EdgeInsets.only(right: 20),
+              child: Icon(Icons.delete, color: Theme.of(context).scaffoldBackgroundColor),
+            ),
+            child: GestureDetector(
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => DetailScreen(catData: cat))),
+              child: Card(
+                child: ListTile(
+                  leading: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: SizedBox(
+                      width: 60,
+                      height: 60,
+                      child: CachedNetworkImage(
+                        imageUrl: cat.url,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => const Center(
+                          child: SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Icon(Icons.error, color: Theme.of(context).colorScheme.error),
+                      ),
+                    ),
+                  ),
+                  title: Text(cat.breedName, style: Theme.of(context).textTheme.bodyMedium),
+                  subtitle: Text('Liked: ${cat.likedAt!.toString().substring(0, 16)}', style: Theme.of(context).textTheme.bodyLarge),
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

@@ -8,7 +8,7 @@ import 'presentation/screens/home_screen.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
-  setupDependencies();
+  await setupDependencies();
   runApp(const CatTinderApp());
 }
 

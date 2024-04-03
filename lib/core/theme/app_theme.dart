@@ -1,65 +1,110 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  // Color constants
-  static const Color primaryBlue = Color(0xFF1976D2);
-  static const Color secondaryBlue = Color(0xFF64B5F6);
-  static const Color darkBlue = Color(0xFF0D47A1);
-  static const Color backgroundLight = Color(0xFFE3F2FD);
-  static const Color surfaceWhite = Colors.white;
-
-  static ThemeData get lightTheme => ThemeData(
-        primaryColor: primaryBlue,
-        scaffoldBackgroundColor: backgroundLight,
-        appBarTheme: const AppBarTheme(
-          elevation: 0,
-          color: primaryBlue,
-          titleTextStyle: TextStyle(
-            color: surfaceWhite,
-            fontSize: 20,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w600,
-          ),
+  static ThemeData get lightTheme {
+    return ThemeData(
+      primaryColor: const Color(0xFF1976D2),
+      scaffoldBackgroundColor: Colors.white,
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        titleTextStyle: TextStyle(
+          color: Color(0xFF0D47A1),
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          fontFamily: 'Poppins',
         ),
-        cardTheme: CardTheme(
+      ),
+      textTheme: const TextTheme(
+        headlineLarge: TextStyle(
+          fontSize: 28,
+          fontWeight: FontWeight.w600,
+          color: Color(0xFF0D47A1),
+          fontFamily: 'Poppins',
+        ),
+        bodyLarge: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+          color: Color(0xFF0D47A1),
+          fontFamily: 'Poppins',
+        ),
+        bodyMedium: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+          color: Color(0xFF0D47A1),
+          fontFamily: 'Poppins',
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFF64B5F6),
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           elevation: 4,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          color: surfaceWhite,
+          textStyle: const TextStyle(fontSize: 16, fontFamily: 'Poppins'),
         ),
-        textTheme: const TextTheme(
-          headlineLarge: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w600,
-            color: darkBlue,
-            fontFamily: 'Poppins',
-          ),
-          bodyLarge: TextStyle(
-            fontSize: 14,
-            color: darkBlue,
-            fontFamily: 'Poppins',
-          ),
-          bodyMedium: TextStyle(
-            fontSize: 18,
-            color: darkBlue,
-            fontWeight: FontWeight.w500,
-            fontFamily: 'Poppins',
-          ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: const Color(0xFF64B5F6),
+          textStyle: const TextStyle(fontSize: 16, fontFamily: 'Poppins'),
         ),
-        colorScheme: const ColorScheme.light(
-          primary: primaryBlue,
-          secondary: secondaryBlue,
-          surface: surfaceWhite,
+      ),
+      iconTheme: const IconThemeData(
+        color: Color(0xFF64B5F6),
+        size: 24,
+      ),
+      cardTheme: CardTheme(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      ),
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+        color: Color(0xFF64B5F6),
+        linearTrackColor: Color(0xFF1976D2),
+      ),
+      dialogTheme: DialogTheme(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        titleTextStyle: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          color: Color(0xFF1976D2),
+          fontFamily: 'Poppins',
         ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: secondaryBlue,
-            foregroundColor: surfaceWhite,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-            textStyle: const TextStyle(fontFamily: 'Poppins', fontSize: 16),
-          ),
+        contentTextStyle: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+          color: Color(0xFF0D47A1),
+          fontFamily: 'Poppins',
         ),
-      );
+      ),
+      colorScheme: ColorScheme.fromSwatch().copyWith(
+        primary: const Color(0xFF1976D2),
+        secondary: const Color(0xFF64B5F6),
+        error: const Color(0xFFEF5350),
+        surface: Colors.grey[200],
+      ),
+    );
+  }
+
+  static ButtonStyle likeButtonStyle(BuildContext context) {
+    return ElevatedButton.styleFrom(
+      backgroundColor: Theme.of(context).colorScheme.secondary,
+      foregroundColor: Colors.white,
+      shape: const CircleBorder(),
+      padding: const EdgeInsets.all(16),
+      elevation: 4,
+    );
+  }
+
+  static ButtonStyle dislikeButtonStyle(BuildContext context) {
+    return ElevatedButton.styleFrom(
+      backgroundColor: Theme.of(context).colorScheme.error,
+      foregroundColor: Colors.white,
+      shape: const CircleBorder(),
+      padding: const EdgeInsets.all(16),
+      elevation: 4,
+    );
+  }
 }
