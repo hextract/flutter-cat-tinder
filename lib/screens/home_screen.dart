@@ -17,13 +17,15 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   final CardSwiperController _swiperController = CardSwiperController();
-  List<Map<String, dynamic>> _cats = [];
+  final List<Map<String, dynamic>> _cats = [];
   int _likeCounter = 0;
   String? _errorMessage;
+  bool _isLoadingMore = false;
 
   Future<void> _fetchCats() async {
     setState(() {
       _errorMessage = null;
+      _isLoadingMore = true;
     });
 
     try {
@@ -36,16 +38,19 @@ class HomeScreenState extends State<HomeScreen> {
       if (response.statusCode == 200) {
         final data = json.decode(response.body) as List;
         setState(() {
-          _cats = data.map((cat) => cat as Map<String, dynamic>).toList();
+          _cats.addAll(data.map((cat) => cat as Map<String, dynamic>).toList());
+          _isLoadingMore = false;
         });
       } else {
         setState(() {
           _errorMessage = 'Failed to load cats: ${response.statusCode}';
+          _isLoadingMore = false;
         });
       }
     } catch (e) {
       setState(() {
         _errorMessage = 'Error: $e';
+        _isLoadingMore = false;
       });
     }
   }
@@ -60,6 +65,10 @@ class HomeScreenState extends State<HomeScreen> {
         _likeCounter++;
       });
     }
+    if (_cats.length - currentIndex! <= 3 && !_isLoadingMore) {
+      _fetchCats();
+    }
+
     return true;
   }
 
