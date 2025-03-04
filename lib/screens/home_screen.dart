@@ -30,9 +30,7 @@ class HomeScreenState extends State<HomeScreen> {
       final response = await http.get(
         Uri.parse(
             'https://api.thecatapi.com/v1/images/search?has_breeds=1&limit=10'),
-        headers: {
-          'x-api-key': dotenv.env['API_KEY']!
-        },
+        headers: {'x-api-key': dotenv.env['API_KEY']!},
       );
 
       if (response.statusCode == 200) {
@@ -200,7 +198,3 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-
-
-
