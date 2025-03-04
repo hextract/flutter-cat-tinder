@@ -11,7 +11,7 @@ class DetailScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(breed['name']),
+        title: Text(breed['name'], style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blueAccent,
       ),
       body: SingleChildScrollView(
