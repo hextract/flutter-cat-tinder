@@ -2,33 +2,30 @@ import '../../../domain/entities/cat.dart';
 
 class HomeState {
   final List<Cat> cats;
-  final int likeCounter;
-  final String? error;
   final bool isLoadingMore;
+  final String? error;
 
-  const HomeState({
+  HomeState({
     required this.cats,
-    required this.likeCounter,
-    this.error,
     required this.isLoadingMore,
+    this.error,
   });
 
-  factory HomeState.initial() => const HomeState(
+  factory HomeState.initial() => HomeState(
         cats: [],
-        likeCounter: 0,
         isLoadingMore: false,
+        error: null,
       );
 
   HomeState copyWith({
     List<Cat>? cats,
-    int? likeCounter,
-    String? error,
     bool? isLoadingMore,
-  }) =>
-      HomeState(
-        cats: cats ?? this.cats,
-        likeCounter: likeCounter ?? this.likeCounter,
-        error: error ?? this.error,
-        isLoadingMore: isLoadingMore ?? this.isLoadingMore,
-      );
+    String? error,
+  }) {
+    return HomeState(
+      cats: cats ?? this.cats,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      error: error ?? this.error,
+    );
+  }
 }

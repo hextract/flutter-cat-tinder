@@ -1,11 +1,13 @@
+import 'package:flutter/foundation.dart';
 import '../entities/cat.dart';
 import '../repositories/cat_repository.dart';
 
 class ManageLikedCats {
   final CatRepository repository;
   final List<Cat> _likedCats = [];
+  final ValueNotifier<int> likeCountNotifier;
 
-  ManageLikedCats(this.repository);
+  ManageLikedCats(this.repository) : likeCountNotifier = ValueNotifier<int>(0);
 
   void addLikedCat(Cat cat) {
     _likedCats.add(Cat(
@@ -19,10 +21,13 @@ class ManageLikedCats {
       weight: cat.weight,
       likedAt: DateTime.now(),
     ));
+    likeCountNotifier.value = _likedCats.length; // Обновляем счетчик
   }
 
-  void removeLikedCat(String id) =>
-      _likedCats.removeWhere((cat) => cat.id == id);
+  void removeLikedCat(String id) {
+    _likedCats.removeWhere((cat) => cat.id == id);
+    likeCountNotifier.value = _likedCats.length; // Обновляем счетчик
+  }
 
   List<Cat> getLikedCats({String? breedFilter}) => breedFilter == null
       ? _likedCats

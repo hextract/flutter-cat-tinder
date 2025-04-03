@@ -27,8 +27,9 @@ class HomeScreen extends StatelessWidget {
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 16),
-              child: BlocBuilder<HomeBloc, HomeState>(
-                builder: (context, state) {
+              child: ValueListenableBuilder<int>(
+                valueListenable: manageLikedCats.likeCountNotifier,
+                builder: (context, likeCount, child) {
                   return ElevatedButton.icon(
                     onPressed: () => Navigator.push(
                       context,
@@ -36,7 +37,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     icon: const Icon(Icons.favorite, size: 20),
                     label: Text(
-                      '${state.likeCounter}',
+                      '$likeCount',
                       style: const TextStyle(fontSize: 16),
                     ),
                     style: ElevatedButton.styleFrom(
@@ -99,7 +100,6 @@ class HomeScreen extends StatelessWidget {
                         cardsCount: state.cats.length,
                         onSwipe: (prev, curr, dir) {
                           if (dir == CardSwiperDirection.right) {
-                            context.read<HomeBloc>().add(LikeCatEvent(prev));
                             manageLikedCats.addLikedCat(state.cats[prev]);
                           }
                           context.read<HomeBloc>().add(CheckLoadMoreEvent(curr ?? 0));
