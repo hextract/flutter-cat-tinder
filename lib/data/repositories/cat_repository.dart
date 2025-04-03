@@ -7,18 +7,20 @@ import '../../domain/repositories/cat_repository.dart';
 import '../models/cat_model.dart';
 
 class CatRepositoryImpl implements CatRepository {
+  static const _baseUrl = 'https://api.thecatapi.com/v1/images/search';
+  static const _limit = 10;
+
   final List<Cat> _likedCats = [];
 
   @override
   Future<List<Cat>> fetchCats() async {
     final response = await http.get(
-      Uri.parse(
-          'https://api.thecatapi.com/v1/images/search?has_breeds=1&limit=10'),
+      Uri.parse('$_baseUrl?has_breeds=1&limit=$_limit'),
       headers: {'x-api-key': dotenv.env['API_KEY']!},
     );
 
     if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
+      final data = json.decode(response.body) as List<dynamic>;
       return data.map((json) => CatModel.fromJson(json)).toList();
     }
     throw ServerException('Failed to load cats: ${response.statusCode}');

@@ -6,7 +6,9 @@ class ManageLikedCats {
   final CatRepository repository;
   final ValueNotifier<int> likeCountNotifier;
 
-  ManageLikedCats(this.repository) : likeCountNotifier = ValueNotifier<int>(repository.getLikedCats().length);
+  ManageLikedCats(this.repository)
+      : likeCountNotifier =
+            ValueNotifier<int>(repository.getLikedCats().length);
 
   void addLikedCat(Cat cat) {
     repository.addLikedCat(cat);

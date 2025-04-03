@@ -18,11 +18,10 @@ class LikedCatsBloc extends Bloc<LikedCatsEvent, LikedCatsState> {
   void _onLoadLikedCats(
       LoadLikedCatsEvent event, Emitter<LikedCatsState> emit) {
     try {
-      final allCats = _manageLikedCats.getLikedCats();
-      final breeds = _getBreeds(allCats);
+      final cats = _manageLikedCats.getLikedCats();
       emit(LikedCatsState(
-        cats: allCats,
-        availableBreeds: breeds,
+        cats: cats,
+        availableBreeds: _getBreeds(cats),
         selectedBreed: null,
         error: null,
       ));
@@ -34,14 +33,13 @@ class LikedCatsBloc extends Bloc<LikedCatsEvent, LikedCatsState> {
   void _onFilterLikedCats(
       FilterLikedCatsEvent event, Emitter<LikedCatsState> emit) {
     try {
+      final allCats = _manageLikedCats.getLikedCats();
       final filteredCats =
           _manageLikedCats.getLikedCats(breedFilter: event.breed);
-      final allCats = _manageLikedCats.getLikedCats();
-      final breeds = _getBreeds(allCats);
       emit(state.copyWith(
         cats: filteredCats,
+        availableBreeds: _getBreeds(allCats),
         selectedBreed: event.breed,
-        availableBreeds: breeds,
         error: null,
       ));
     } catch (e) {
@@ -54,12 +52,20 @@ class LikedCatsBloc extends Bloc<LikedCatsEvent, LikedCatsState> {
     try {
       _manageLikedCats.removeLikedCat(event.id);
       final allCats = _manageLikedCats.getLikedCats();
-      final breeds = _getBreeds(allCats);
+      final availableBreeds = _getBreeds(allCats);
       final filteredCats =
           _manageLikedCats.getLikedCats(breedFilter: state.selectedBreed);
+      final selectedBreed = availableBreeds.contains(state.selectedBreed) &&
+              filteredCats.isNotEmpty
+          ? state.selectedBreed
+          : null;
+
       emit(state.copyWith(
-        cats: filteredCats,
-        availableBreeds: breeds,
+        cats: filteredCats.isEmpty && selectedBreed == null
+            ? allCats
+            : filteredCats,
+        availableBreeds: availableBreeds,
+        selectedBreed: selectedBreed,
         error: null,
       ));
     } catch (e) {

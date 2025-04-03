@@ -12,7 +12,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     add(FetchCatsEvent());
   }
 
-  Future<void> _onFetchCats(FetchCatsEvent event, Emitter<HomeState> emit) async {
+  Future<void> _onFetchCats(
+      FetchCatsEvent event, Emitter<HomeState> emit) async {
     emit(state.copyWith(isLoadingMore: true));
     try {
       final newCats = await _fetchCats();

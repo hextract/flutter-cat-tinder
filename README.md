@@ -14,7 +14,12 @@ Simple Flutter app which allows you to swipe cats in "Tinder-like" form.
 4. Buttons with swipe functionality
 5. Detail screen: info about breed and full info
 6. New cats loading on end of current
-7. Fulfilled readme.md
+7. Liked cats screen
+8. Adding and deleting cats from liked (stored in Runtime)
+9. Instant filter in liked
+10. Proper error handling
+11. Progress bars
+12. Fulfilled readme.md
 
 ## Screens
 

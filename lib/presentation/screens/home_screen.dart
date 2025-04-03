@@ -46,7 +46,8 @@ class HomeScreen extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
                       elevation: 4,
                     ),
                   );
@@ -62,13 +63,17 @@ class HomeScreen extends StatelessWidget {
                 showDialog(
                   context: context,
                   builder: (_) => AlertDialog(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                    title: const Text('Oops!', style: TextStyle(color: Color(0xFF1976D2))),
-                    content: Text(state.error!, style: Theme.of(context).textTheme.bodyLarge),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16)),
+                    title: const Text('Oops!',
+                        style: TextStyle(color: Color(0xFF1976D2))),
+                    content: Text(state.error!,
+                        style: Theme.of(context).textTheme.bodyLarge),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: const Text('OK', style: TextStyle(color: Color(0xFF64B5F6))),
+                        child: const Text('OK',
+                            style: TextStyle(color: Color(0xFF64B5F6))),
                       ),
                     ],
                   ),
@@ -79,15 +84,16 @@ class HomeScreen extends StatelessWidget {
               if (state.cats.isEmpty) {
                 return Center(
                   child: state.isLoadingMore
-                      ? const CircularProgressIndicator(color: Color(0xFF64B5F6))
+                      ? const CircularProgressIndicator(
+                          color: Color(0xFF64B5F6))
                       : const Text(
-                    'No cats available yet',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Color(0xFF0D47A1),
-                      fontFamily: 'Poppins',
-                    ),
-                  ),
+                          'No cats available yet',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Color(0xFF0D47A1),
+                            fontFamily: 'Poppins',
+                          ),
+                        ),
                 );
               }
               return Column(
@@ -102,13 +108,16 @@ class HomeScreen extends StatelessWidget {
                           if (dir == CardSwiperDirection.right) {
                             manageLikedCats.addLikedCat(state.cats[prev]);
                           }
-                          context.read<HomeBloc>().add(CheckLoadMoreEvent(curr ?? 0));
+                          context
+                              .read<HomeBloc>()
+                              .add(CheckLoadMoreEvent(curr ?? 0));
                           return true;
                         },
                         numberOfCardsDisplayed: 3,
                         backCardOffset: const Offset(40, 40),
                         scale: 0.9,
-                        cardBuilder: (_, index, __, ___) => CatCard(cat: state.cats[index]),
+                        cardBuilder: (_, index, __, ___) =>
+                            CatCard(cat: state.cats[index]),
                       ),
                     ),
                   ),
@@ -118,10 +127,12 @@ class HomeScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         DislikeButton(
-                          onPressed: () => _swiperController.swipe(CardSwiperDirection.left),
+                          onPressed: () =>
+                              _swiperController.swipe(CardSwiperDirection.left),
                         ),
                         LikeButton(
-                          onPressed: () => _swiperController.swipe(CardSwiperDirection.right),
+                          onPressed: () => _swiperController
+                              .swipe(CardSwiperDirection.right),
                         ),
                       ],
                     ),

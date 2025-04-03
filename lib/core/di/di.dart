@@ -10,18 +10,17 @@ import '../../domain/repositories/cat_repository.dart' as domain;
 final getIt = GetIt.instance;
 
 void setupDependencies() {
-  // Data layer
+  // Data Layer: Repository for data access
   getIt.registerLazySingleton<domain.CatRepository>(() => CatRepositoryImpl());
 
-  // Domain layer
+  // Domain Layer: Use cases for business logic
   getIt.registerLazySingleton<FetchCats>(
       () => FetchCats(getIt<domain.CatRepository>()));
   getIt.registerLazySingleton<ManageLikedCats>(
       () => ManageLikedCats(getIt<domain.CatRepository>()));
   getIt.registerLazySingleton<GetBreeds>(
       () => GetBreeds(getIt<domain.CatRepository>()));
-
-  // Presentation layer
+  // Presentation Layer: BLoC for state management
   getIt.registerFactory<HomeBloc>(() => HomeBloc(getIt<FetchCats>()));
   getIt.registerFactory<LikedCatsBloc>(() => LikedCatsBloc(
         getIt<ManageLikedCats>(),
