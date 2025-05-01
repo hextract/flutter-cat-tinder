@@ -11,6 +11,8 @@ class CatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       clipBehavior: Clip.antiAlias,
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Stack(
         children: [
           CachedNetworkImage(
@@ -18,8 +20,12 @@ class CatCard extends StatelessWidget {
             width: double.infinity,
             height: double.infinity,
             fit: BoxFit.cover,
-            placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
-            errorWidget: (context, url, error) => Icon(Icons.error, color: Theme.of(context).colorScheme.error),
+            placeholder: (context, url) =>
+            const Center(child: CircularProgressIndicator()),
+            errorWidget: (context, url, error) => Icon(
+              Icons.error,
+              color: Theme.of(context).colorScheme.error,
+            ),
           ),
           Positioned(
             bottom: 0,
@@ -32,17 +38,33 @@ class CatCard extends StatelessWidget {
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
                   colors: [
-                    Colors.black.withOpacity(0.7),
+                    Colors.black.withValues(alpha: 0.7),
                     Colors.transparent,
                   ],
                 ),
               ),
-              child: Text(
-                cat.breedName,
-                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                  fontSize: 20,
-                  color: Colors.white,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    cat.breedName,
+                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                      fontSize: 18,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  if (cat.temperament.isNotEmpty)
+                    Text(
+                      cat.temperament,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontSize: 14,
+                        color: Colors.white70,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                ],
               ),
             ),
           ),

@@ -11,7 +11,8 @@ class DetailScreen extends StatefulWidget {
   State<DetailScreen> createState() => _DetailScreenState();
 }
 
-class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderStateMixin {
+class _DetailScreenState extends State<DetailScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
 
@@ -50,7 +51,8 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
                     imageUrl: widget.catData.url,
                     fit: BoxFit.cover,
                     placeholder: (_, __) => _buildCustomPlaceholder(),
-                    errorWidget: (_, __, ___) => const Icon(Icons.error, size: 50, color: Colors.red),
+                    errorWidget: (_, __, ___) =>
+                        const Icon(Icons.error, size: 50, color: Colors.red),
                   ),
                 ),
               ),
@@ -67,9 +69,11 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(widget.catData.breedName, style: Theme.of(context).textTheme.headlineLarge),
+                      Text(widget.catData.breedName,
+                          style: Theme.of(context).textTheme.headlineLarge),
                       const SizedBox(height: 12),
-                      Text(widget.catData.breedDescription, style: Theme.of(context).textTheme.bodyLarge),
+                      Text(widget.catData.breedDescription,
+                          style: Theme.of(context).textTheme.bodyLarge),
                       const SizedBox(height: 20),
                       _buildInfoCard('Origin', widget.catData.origin),
                       _buildInfoCard('Temperament', widget.catData.temperament),
@@ -102,35 +106,43 @@ class _DetailScreenState extends State<DetailScreen> with SingleTickerProviderSt
   }
 
   Widget _buildInfoCard(String label, String value) => Card(
-    margin: const EdgeInsets.only(bottom: 8),
-    elevation: 4,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-    child: Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        gradient: const LinearGradient(
-          colors: [Color(0xFF64B5F6), Color(0xFF1976D2)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: RichText(
-          text: TextSpan(
-            children: [
-              TextSpan(
-                text: '$label: ',
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white, fontFamily: 'Poppins'),
+        margin: const EdgeInsets.only(bottom: 8),
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            gradient: const LinearGradient(
+              colors: [Color(0xFF64B5F6), Color(0xFF1976D2)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: '$label: ',
+                    style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                        fontFamily: 'Poppins'),
+                  ),
+                  TextSpan(
+                    text: value,
+                    style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white,
+                        fontFamily: 'Poppins'),
+                  ),
+                ],
               ),
-              TextSpan(
-                text: value,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white, fontFamily: 'Poppins'),
-              ),
-            ],
+            ),
           ),
         ),
-      ),
-    ),
-  );
+      );
 }

@@ -41,7 +41,8 @@ class _LikedCatsScreenState extends State<LikedCatsScreen> {
                 context: context,
                 builder: (_) => AlertDialog(
                   title: const Text('Error'),
-                  content: Text(state.error!, style: Theme.of(context).textTheme.bodyLarge),
+                  content: Text(state.error!,
+                      style: Theme.of(context).textTheme.bodyLarge),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(context),
@@ -60,9 +61,14 @@ class _LikedCatsScreenState extends State<LikedCatsScreen> {
             return Column(
               children: [
                 _BreedFilter(
-                  selectedBreed: state.availableBreeds.contains(state.selectedBreed) ? state.selectedBreed : null,
+                  selectedBreed:
+                      state.availableBreeds.contains(state.selectedBreed)
+                          ? state.selectedBreed
+                          : null,
                   availableBreeds: state.availableBreeds,
-                  onChanged: (value) => context.read<LikedCatsBloc>().add(FilterLikedCatsEvent(value)),
+                  onChanged: (value) => context
+                      .read<LikedCatsBloc>()
+                      .add(FilterLikedCatsEvent(value)),
                 ),
                 _CatList(cats: state.cats),
               ],
@@ -91,18 +97,24 @@ class _BreedFilter extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: DropdownButtonFormField<String>(
         value: selectedBreed,
-        hint: Text('Filter by breed', style: Theme.of(context).textTheme.bodyMedium),
+        hint: Text('Filter by breed',
+            style: Theme.of(context).textTheme.bodyMedium),
         items: [
-          DropdownMenuItem(value: null, child: Text('All', style: Theme.of(context).textTheme.bodyMedium)),
+          DropdownMenuItem(
+              value: null,
+              child:
+                  Text('All', style: Theme.of(context).textTheme.bodyMedium)),
           ...availableBreeds.map((breed) => DropdownMenuItem(
-            value: breed,
-            child: Text(
-              breed,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: selectedBreed == breed ? Theme.of(context).primaryColor : null,
-              ),
-            ),
-          )),
+                value: breed,
+                child: Text(
+                  breed,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: selectedBreed == breed
+                            ? Theme.of(context).primaryColor
+                            : null,
+                      ),
+                ),
+              )),
         ],
         onChanged: onChanged,
         decoration: InputDecoration(
@@ -116,7 +128,8 @@ class _BreedFilter extends StatelessWidget {
           ),
           filled: true,
           fillColor: Theme.of(context).scaffoldBackgroundColor,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         ),
         style: Theme.of(context).textTheme.bodyMedium,
       ),
@@ -133,53 +146,67 @@ class _CatList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: cats.isEmpty
-          ? Center(child: Text('No liked cats yet', style: Theme.of(context).textTheme.bodyLarge))
+          ? Center(
+              child: Text('No liked cats yet',
+                  style: Theme.of(context).textTheme.bodyLarge))
           : ListView.builder(
-        itemCount: cats.length,
-        itemBuilder: (context, index) {
-          if (index >= cats.length) return const SizedBox.shrink();
-          final cat = cats[index];
-          return Dismissible(
-            key: Key(cat.id),
-            direction: DismissDirection.endToStart,
-            onDismissed: (_) => context.read<LikedCatsBloc>().add(RemoveLikedCatEvent(cat.id)),
-            background: Container(
-              color: Theme.of(context).iconTheme.color,
-              alignment: Alignment.centerRight,
-              padding: const EdgeInsets.only(right: 20),
-              child: Icon(Icons.delete, color: Theme.of(context).scaffoldBackgroundColor),
-            ),
-            child: GestureDetector(
-              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => DetailScreen(catData: cat))),
-              child: Card(
-                child: ListTile(
-                  leading: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: SizedBox(
-                      width: 60,
-                      height: 60,
-                      child: CachedNetworkImage(
-                        imageUrl: cat.url,
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) => const Center(
+              itemCount: cats.length,
+              itemBuilder: (context, index) {
+                if (index >= cats.length) return const SizedBox.shrink();
+                final cat = cats[index];
+                return Dismissible(
+                  key: Key(cat.id),
+                  direction: DismissDirection.endToStart,
+                  onDismissed: (_) => context
+                      .read<LikedCatsBloc>()
+                      .add(RemoveLikedCatEvent(cat.id)),
+                  background: Container(
+                    color: Theme.of(context).iconTheme.color,
+                    alignment: Alignment.centerRight,
+                    padding: const EdgeInsets.only(right: 20),
+                    child: Icon(Icons.delete,
+                        color: Theme.of(context).scaffoldBackgroundColor),
+                  ),
+                  child: GestureDetector(
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => DetailScreen(catData: cat))),
+                    child: Card(
+                      child: ListTile(
+                        leading: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
                           child: SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(strokeWidth: 2),
+                            width: 60,
+                            height: 60,
+                            child: CachedNetworkImage(
+                              imageUrl: cat.url,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => const Center(
+                                child: SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child:
+                                      CircularProgressIndicator(strokeWidth: 2),
+                                ),
+                              ),
+                              errorWidget: (context, url, error) => Icon(
+                                  Icons.error,
+                                  color: Theme.of(context).colorScheme.error),
+                            ),
                           ),
                         ),
-                        errorWidget: (context, url, error) => Icon(Icons.error, color: Theme.of(context).colorScheme.error),
+                        title: Text(cat.breedName,
+                            style: Theme.of(context).textTheme.bodyMedium),
+                        subtitle: Text(
+                            'Liked: ${cat.likedAt!.toString().substring(0, 16)}',
+                            style: Theme.of(context).textTheme.bodyLarge),
                       ),
                     ),
                   ),
-                  title: Text(cat.breedName, style: Theme.of(context).textTheme.bodyMedium),
-                  subtitle: Text('Liked: ${cat.likedAt!.toString().substring(0, 16)}', style: Theme.of(context).textTheme.bodyLarge),
-                ),
-              ),
+                );
+              },
             ),
-          );
-        },
-      ),
     );
   }
 }

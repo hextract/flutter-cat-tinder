@@ -1,45 +1,66 @@
 import '../../domain/entities/cat.dart';
 
-class CatModel extends Cat {
-  const CatModel({
-    required super.id,
-    required super.url,
-    required super.breedName,
-    required super.breedDescription,
-    required super.origin,
-    required super.temperament,
-    required super.lifeSpan,
-    required super.weight,
-    super.likedAt,
+class CatModel {
+  final String id;
+  final String url;
+  final List<BreedModel> breeds;
+
+  CatModel({
+    required this.id,
+    required this.url,
+    required this.breeds,
   });
 
   factory CatModel.fromJson(Map<String, dynamic> json) {
-    final breed = json['breeds'][0];
     return CatModel(
-      id: json['id'],
-      url: json['url'],
-      breedName: breed['name'],
-      breedDescription: breed['description'],
-      origin: breed['origin'],
-      temperament: breed['temperament'],
-      lifeSpan: breed['life_span'],
-      weight: breed['weight']['metric'],
+      id: json['id'] ?? '',
+      url: json['url'] ?? '',
+      breeds: (json['breeds'] as List<dynamic>?)
+              ?.map((b) => BreedModel.fromJson(b))
+              .toList() ??
+          [],
     );
   }
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'url': url,
-        'breeds': [
-          {
-            'name': breedName,
-            'description': breedDescription,
-            'origin': origin,
-            'temperament': temperament,
-            'life_span': lifeSpan,
-            'weight': {'metric': weight},
-          }
-        ],
-        'likedAt': likedAt?.toIso8601String(),
-      };
+  Cat toCat() {
+    return Cat(
+      id: id,
+      url: url,
+      breedName: breeds.isNotEmpty ? breeds[0].name : 'Unknown',
+      breedDescription: breeds.isNotEmpty ? breeds[0].description : '',
+      origin: breeds.isNotEmpty ? breeds[0].origin : '',
+      temperament: breeds.isNotEmpty ? breeds[0].temperament : '',
+      lifeSpan: breeds.isNotEmpty ? breeds[0].lifeSpan : '',
+      weight: breeds.isNotEmpty ? breeds[0].weight : '0',
+    );
+  }
+}
+
+class BreedModel {
+  final String name;
+  final String description;
+  final String origin;
+  final String temperament;
+  final String lifeSpan;
+  final String weight;
+
+  BreedModel({
+    required this.name,
+    required this.description,
+    required this.origin,
+    required this.temperament,
+    required this.lifeSpan,
+    required this.weight,
+  });
+
+  factory BreedModel.fromJson(Map<String, dynamic> json) {
+    return BreedModel(
+      name: json['name'] ?? 'Unknown',
+      description: json['description'] ?? '',
+      origin: json['origin'] ?? '',
+      temperament: json['temperament'] ?? '',
+      lifeSpan: json['life_span'] ?? '',
+      weight: json['weight']?['metric'] ?? '0',
+    );
+  }
 }

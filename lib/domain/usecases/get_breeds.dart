@@ -1,4 +1,3 @@
-import '../entities/cat.dart';
 import '../repositories/cat_repository.dart';
 
 class GetBreeds {
@@ -6,6 +5,8 @@ class GetBreeds {
 
   GetBreeds(this.repository);
 
-  List<String> call(List<Cat> cats) =>
-      cats.map((cat) => cat.breedName).toSet().toList();
+  Future<List<String>> call() async {
+    final cats = await repository.getLikedCats();
+    return cats.map((cat) => cat.breedName).toSet().toList();
+  }
 }

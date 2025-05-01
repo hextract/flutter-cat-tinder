@@ -3,27 +3,29 @@ import '../entities/cat.dart';
 import '../repositories/cat_repository.dart';
 
 class ManageLikedCats {
-  final CatRepository repository;
-  final ValueNotifier<int> likeCountNotifier;
+  final CatRepository _repository;
+  final ValueNotifier<int> likeCountNotifier = ValueNotifier(0);
 
-  ManageLikedCats(this.repository)
-      : likeCountNotifier =
-            ValueNotifier<int>(repository.getLikedCats().length);
-
-  void addLikedCat(Cat cat) {
-    repository.addLikedCat(cat);
-    likeCountNotifier.value = repository.getLikedCats().length;
+  ManageLikedCats(this._repository) {
+    _updateLikeCount();
   }
 
-  void removeLikedCat(String id) {
-    repository.removeLikedCat(id);
-    likeCountNotifier.value = repository.getLikedCats().length;
+  Future<void> addLikedCat(Cat cat) async {
+    await _repository.addLikedCat(cat);
+    await _updateLikeCount();
   }
 
-  List<Cat> getLikedCats({String? breedFilter}) {
-    final likedCats = repository.getLikedCats();
-    return breedFilter == null
-        ? likedCats
-        : likedCats.where((cat) => cat.breedName == breedFilter).toList();
+  Future<void> removeLikedCat(String catId) async {
+    await _repository.removeLikedCat(catId);
+    await _updateLikeCount();
+  }
+
+  Future<List<Cat>> getLikedCats() async {
+    return await _repository.getLikedCats();
+  }
+
+  Future<void> _updateLikeCount() async {
+    final likedCats = await getLikedCats();
+    likeCountNotifier.value = likedCats.length;
   }
 }

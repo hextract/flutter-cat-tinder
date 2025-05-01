@@ -6,5 +6,7 @@ class FetchCats {
 
   FetchCats(this.repository);
 
-  Future<List<Cat>> call() => repository.fetchCats();
+  Future<List<Cat>> call() async {
+    return await repository.fetchCats();
+  }
 }
