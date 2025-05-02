@@ -33,7 +33,6 @@ class CatList extends StatelessWidget {
               controller: swiperController,
               cardsCount: state.cats.length,
               onSwipe: (prev, curr, dir) async {
-                // Сохраняем HomeBloc до await
                 final homeBloc = context.read<HomeBloc>();
                 if (dir == CardSwiperDirection.right) {
                   await manageLikedCats.addLikedCat(state.cats[prev]);

@@ -1,11 +1,13 @@
-import '../../domain/entities/cat.dart';
+import 'package:cat_tinder/domain/entities/cat.dart';
+import 'package:equatable/equatable.dart';
+import 'breed_model.dart';
 
-class CatModel {
+class CatModel extends Equatable {
   final String id;
   final String url;
   final List<BreedModel> breeds;
 
-  CatModel({
+  const CatModel({
     required this.id,
     required this.url,
     required this.breeds,
@@ -13,54 +15,37 @@ class CatModel {
 
   factory CatModel.fromJson(Map<String, dynamic> json) {
     return CatModel(
-      id: json['id'] ?? '',
-      url: json['url'] ?? '',
+      id: json['id'] as String,
+      url: json['url'] as String,
       breeds: (json['breeds'] as List<dynamic>?)
-              ?.map((b) => BreedModel.fromJson(b))
-              .toList() ??
+          ?.map((breed) => BreedModel.fromJson(breed as Map<String, dynamic>))
+          .toList() ??
           [],
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'url': url,
+      'breeds': breeds.map((breed) => breed.toJson()).toList(),
+    };
+  }
+
   Cat toCat() {
+    final breed = breeds.isNotEmpty ? breeds.first : null;
     return Cat(
       id: id,
       url: url,
-      breedName: breeds.isNotEmpty ? breeds[0].name : 'Unknown',
-      breedDescription: breeds.isNotEmpty ? breeds[0].description : '',
-      origin: breeds.isNotEmpty ? breeds[0].origin : '',
-      temperament: breeds.isNotEmpty ? breeds[0].temperament : '',
-      lifeSpan: breeds.isNotEmpty ? breeds[0].lifeSpan : '',
-      weight: breeds.isNotEmpty ? breeds[0].weight : '0',
+      breedName: breed?.name ?? 'Unknown',
+      breedDescription: breed?.description ?? '',
+      origin: breed?.origin ?? '',
+      temperament: breed?.temperament ?? '',
+      lifeSpan: breed?.lifeSpan ?? '',
+      weight: breed?.weight ?? '0',
     );
   }
-}
 
-class BreedModel {
-  final String name;
-  final String description;
-  final String origin;
-  final String temperament;
-  final String lifeSpan;
-  final String weight;
-
-  BreedModel({
-    required this.name,
-    required this.description,
-    required this.origin,
-    required this.temperament,
-    required this.lifeSpan,
-    required this.weight,
-  });
-
-  factory BreedModel.fromJson(Map<String, dynamic> json) {
-    return BreedModel(
-      name: json['name'] ?? 'Unknown',
-      description: json['description'] ?? '',
-      origin: json['origin'] ?? '',
-      temperament: json['temperament'] ?? '',
-      lifeSpan: json['life_span'] ?? '',
-      weight: json['weight']?['metric'] ?? '0',
-    );
-  }
+  @override
+  List<Object?> get props => [id, url, breeds];
 }

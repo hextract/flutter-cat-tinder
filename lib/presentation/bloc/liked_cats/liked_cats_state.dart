@@ -1,13 +1,14 @@
+import 'package:equatable/equatable.dart';
 import '../../../domain/entities/cat.dart';
 
-class LikedCatsState {
+class LikedCatsState extends Equatable {
   final List<Cat> cats;
   final List<String> availableBreeds;
   final String? selectedBreed;
   final String? error;
   final bool isLoading;
 
-  LikedCatsState({
+  const LikedCatsState({
     required this.cats,
     required this.availableBreeds,
     this.selectedBreed,
@@ -15,7 +16,7 @@ class LikedCatsState {
     required this.isLoading,
   });
 
-  factory LikedCatsState.initial() => LikedCatsState(
+  factory LikedCatsState.initial() => const LikedCatsState(
     cats: [],
     availableBreeds: [],
     selectedBreed: null,
@@ -38,4 +39,13 @@ class LikedCatsState {
       isLoading: isLoading ?? this.isLoading,
     );
   }
+
+  @override
+  List<Object?> get props => [
+    cats,
+    availableBreeds,
+    selectedBreed,
+    error,
+    isLoading,
+  ];
 }

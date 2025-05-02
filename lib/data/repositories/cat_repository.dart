@@ -13,9 +13,9 @@ class CatRepositoryImpl implements CatRepository {
   final SharedPreferences _prefs;
   static const String _likedCatsKey = 'liked_cats';
   static const int _limit = 10;
-  static const int _maxLikedCats = 100; // Ограничение на количество лайков
+  static const int _maxLikedCats = 100;
   int _page = 0;
-  final List<Cat> _likedCats;
+  List<Cat> _likedCats;
 
   CatRepositoryImpl(this._prefs) : _likedCats = _loadLikedCatsFromPrefsSync(_prefs);
 
@@ -33,7 +33,7 @@ class CatRepositoryImpl implements CatRepository {
             .map((json) => Cat.fromJson(json as Map<String, dynamic>))
             .toList();
         debugPrint('CatRepository: Loaded ${cats.length} liked cats from SharedPreferences');
-        return cats.take(_maxLikedCats).toList(); // Ограничиваем размер
+        return cats.take(_maxLikedCats).toList();
       } else {
         debugPrint('CatRepository: Invalid liked cats JSON format, clearing cache');
         prefs.remove(_likedCatsKey);
@@ -110,7 +110,7 @@ class CatRepositoryImpl implements CatRepository {
     if (!_likedCats.any((c) => c.id == cat.id)) {
       _likedCats.add(cat.copyWith(likedAt: DateTime.now()));
       if (_likedCats.length > _maxLikedCats) {
-        _likedCats.removeAt(0); // Удаляем самый старый лайк
+        _likedCats.removeAt(0);
       }
       await _saveLikedCatsToPrefs();
       debugPrint('CatRepository: Liked cat added, total liked: ${_likedCats.length}');
@@ -119,6 +119,7 @@ class CatRepositoryImpl implements CatRepository {
 
   @override
   Future<List<Cat>> getLikedCats() async {
+    _likedCats = _loadLikedCatsFromPrefsSync(_prefs);
     debugPrint('CatRepository: Returning ${_likedCats.length} liked cats');
     return _likedCats;
   }

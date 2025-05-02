@@ -20,4 +20,16 @@ class DetailState {
       error: error ?? this.error,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is DetailState &&
+              runtimeType == other.runtimeType &&
+              cat == other.cat &&
+              isLoading == other.isLoading &&
+              error == other.error;
+
+  @override
+  int get hashCode => cat.hashCode ^ isLoading.hashCode ^ error.hashCode;
 }

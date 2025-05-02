@@ -3,13 +3,11 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart' show debugPrint, kIsWeb;
 import 'package:flutter/material.dart';
 
-// Сервис для управления состоянием сети и уведомлениями
 class ConnectivityService {
   StreamSubscription<List<ConnectivityResult>>? _subscription;
   List<ConnectivityResult>? _lastConnectivityResult;
   bool _isInitialized = false;
 
-  // Инициализация сервиса и подписка на изменения сети
   Future<void> initialize({
     required BuildContext context,
     required VoidCallback onFetchCats,
@@ -28,7 +26,6 @@ class ConnectivityService {
       return;
     }
 
-    // Проверяем начальное состояние сети с таймаутом
     try {
       final result = await Connectivity()
           .checkConnectivity()
@@ -51,7 +48,6 @@ class ConnectivityService {
       }
     }
 
-    // Подписываемся на изменения состояния сети
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     _subscription = Connectivity().onConnectivityChanged.listen((result) {
       final isOffline = result.every((r) => r == ConnectivityResult.none);
@@ -91,14 +87,12 @@ class ConnectivityService {
     });
   }
 
-  // Отмена подписки при уничтожении сервиса
   void dispose() {
     debugPrint('ConnectivityService: Disposing subscription');
     _subscription?.cancel();
     _isInitialized = false;
   }
 
-  // Проверка, оффлайн ли устройство
   bool isOffline() {
     final offline = _lastConnectivityResult?.every((r) => r == ConnectivityResult.none) ?? true;
     debugPrint('ConnectivityService: isOffline: $offline');

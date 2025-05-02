@@ -73,7 +73,6 @@ class LikedCatsBloc extends Bloc<LikedCatsEvent, LikedCatsState> {
       await _manageLikedCats.removeLikedCat(event.id);
       final cats = await _manageLikedCats.getLikedCats();
       final breeds = await _getBreeds();
-      // Применяем текущий фильтр, если он активен
       final filteredCats = state.selectedBreed == null ||
           !breeds.contains(state.selectedBreed)
           ? cats

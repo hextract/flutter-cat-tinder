@@ -32,7 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
       create: (_) => getIt<HomeBloc>(),
       child: Builder(
         builder: (blocContext) {
-          // Инициализируем ConnectivityService в build с правильным контекстом
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _connectivityService.initialize(
               context: blocContext,
