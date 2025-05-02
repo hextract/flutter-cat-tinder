@@ -19,7 +19,11 @@ Simple Flutter app which allows you to swipe cats in "Tinder-like" form.
 9. Instant filter in liked
 10. Proper error handling
 11. Progress bars
-12. Fulfilled readme.md
+12. Saving likes (with all data) from time exited to time you login back
+13. Offline work
+14. Auto connection-restore if it returned
+15. Unit-tested (coverage: 69.8%)
+16. Fulfilled readme.md
 
 ## Screens
 
@@ -28,5 +32,7 @@ Simple Flutter app which allows you to swipe cats in "Tinder-like" form.
 ![assets/readme/screenshots/3.jpg](assets/readme/screenshots/3.jpg)
 ![assets/readme/screenshots/4.jpg](assets/readme/screenshots/4.jpg)
 ![assets/readme/screenshots/5.jpg](assets/readme/screenshots/5.jpg)
+![assets/readme/screenshots/6.jpg](assets/readme/screenshots/6.jpg)
+![assets/readme/screenshots/7.jpg](assets/readme/screenshots/7.jpg)
 
-## [Download](https://github.com/hextract/flutter-cat-tinder/blob/7003f485124438a96604ff5055126c722d6fc8c2/release/cat-tinder-2.0.0.apk)
+## [Download](https://github.com/hextract/flutter-cat-tinder/blob/9839939ef2bed0bc9cb8bc41eaaa923bac233106/release/cat-tinder-3.0.0.apk)
