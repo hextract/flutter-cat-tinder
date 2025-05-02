@@ -68,9 +68,9 @@ class _LikedCatsScreenState extends State<LikedCatsScreen> {
               children: [
                 _BreedFilter(
                   selectedBreed:
-                  state.availableBreeds.contains(state.selectedBreed)
-                      ? state.selectedBreed
-                      : null,
+                      state.availableBreeds.contains(state.selectedBreed)
+                          ? state.selectedBreed
+                          : null,
                   availableBreeds: state.availableBreeds,
                   onChanged: (value) => context
                       .read<LikedCatsBloc>()
@@ -107,16 +107,16 @@ class _BreedFilter extends StatelessWidget {
         items: [
           const DropdownMenuItem(value: null, child: Text('All')),
           ...availableBreeds.map((breed) => DropdownMenuItem(
-            value: breed,
-            child: Text(
-              breed,
-              style: TextStyle(
-                color: selectedBreed == breed
-                    ? Theme.of(context).primaryColor
-                    : null,
-              ),
-            ),
-          )),
+                value: breed,
+                child: Text(
+                  breed,
+                  style: TextStyle(
+                    color: selectedBreed == breed
+                        ? Theme.of(context).primaryColor
+                        : null,
+                  ),
+                ),
+              )),
         ],
         onChanged: availableBreeds.isNotEmpty ? onChanged : null,
         decoration: InputDecoration(
@@ -131,7 +131,7 @@ class _BreedFilter extends StatelessWidget {
           filled: true,
           fillColor: Theme.of(context).scaffoldBackgroundColor,
           contentPadding:
-          const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         ),
       ),
     );
@@ -153,9 +153,8 @@ class _CatList extends StatelessWidget {
           return Dismissible(
             key: Key(cat.id),
             direction: DismissDirection.endToStart,
-            onDismissed: (_) => context
-                .read<LikedCatsBloc>()
-                .add(RemoveLikedCatEvent(cat.id)),
+            onDismissed: (_) =>
+                context.read<LikedCatsBloc>().add(RemoveLikedCatEvent(cat.id)),
             background: Container(
               color: Theme.of(context).iconTheme.color,
               alignment: Alignment.centerRight,
@@ -165,8 +164,7 @@ class _CatList extends StatelessWidget {
             child: GestureDetector(
               onTap: () => Navigator.push(
                 context,
-                MaterialPageRoute(
-                    builder: (_) => DetailScreen(catData: cat)),
+                MaterialPageRoute(builder: (_) => DetailScreen(catData: cat)),
               ),
               child: Card(
                 child: ListTile(
@@ -182,12 +180,11 @@ class _CatList extends StatelessWidget {
                           child: SizedBox(
                             width: 24,
                             height: 24,
-                            child:
-                            CircularProgressIndicator(strokeWidth: 2),
+                            child: CircularProgressIndicator(strokeWidth: 2),
                           ),
                         ),
                         errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
+                            const Icon(Icons.error),
                       ),
                     ),
                   ),

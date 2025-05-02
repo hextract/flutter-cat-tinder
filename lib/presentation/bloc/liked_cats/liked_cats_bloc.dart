@@ -29,9 +29,8 @@ class LikedCatsBloc extends Bloc<LikedCatsEvent, LikedCatsState> {
         error: null,
       ));
     } catch (e) {
-      final errorMessage = e is ServerException
-          ? e.message
-          : 'Failed to load liked cats';
+      final errorMessage =
+          e is ServerException ? e.message : 'Failed to load liked cats';
       emit(state.copyWith(
         isLoading: false,
         error: errorMessage,
@@ -46,7 +45,7 @@ class LikedCatsBloc extends Bloc<LikedCatsEvent, LikedCatsState> {
     try {
       final cats = await _manageLikedCats.getLikedCats();
       final filteredCats = selectedBreed == null ||
-          !state.availableBreeds.contains(selectedBreed)
+              !state.availableBreeds.contains(selectedBreed)
           ? cats
           : cats.where((cat) => cat.breedName == selectedBreed).toList();
       emit(state.copyWith(
@@ -56,9 +55,8 @@ class LikedCatsBloc extends Bloc<LikedCatsEvent, LikedCatsState> {
         error: null,
       ));
     } catch (e) {
-      final errorMessage = e is ServerException
-          ? e.message
-          : 'Failed to filter liked cats';
+      final errorMessage =
+          e is ServerException ? e.message : 'Failed to filter liked cats';
       emit(state.copyWith(
         isLoading: false,
         error: errorMessage,
@@ -74,7 +72,7 @@ class LikedCatsBloc extends Bloc<LikedCatsEvent, LikedCatsState> {
       final cats = await _manageLikedCats.getLikedCats();
       final breeds = await _getBreeds();
       final filteredCats = state.selectedBreed == null ||
-          !breeds.contains(state.selectedBreed)
+              !breeds.contains(state.selectedBreed)
           ? cats
           : cats.where((cat) => cat.breedName == state.selectedBreed).toList();
       emit(state.copyWith(
@@ -84,9 +82,8 @@ class LikedCatsBloc extends Bloc<LikedCatsEvent, LikedCatsState> {
         error: null,
       ));
     } catch (e) {
-      final errorMessage = e is ServerException
-          ? e.message
-          : 'Failed to remove liked cat';
+      final errorMessage =
+          e is ServerException ? e.message : 'Failed to remove liked cat';
       emit(state.copyWith(
         isLoading: false,
         error: errorMessage,

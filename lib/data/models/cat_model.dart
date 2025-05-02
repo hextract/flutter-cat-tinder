@@ -18,8 +18,9 @@ class CatModel extends Equatable {
       id: json['id'] as String,
       url: json['url'] as String,
       breeds: (json['breeds'] as List<dynamic>?)
-          ?.map((breed) => BreedModel.fromJson(breed as Map<String, dynamic>))
-          .toList() ??
+              ?.map(
+                  (breed) => BreedModel.fromJson(breed as Map<String, dynamic>))
+              .toList() ??
           [],
     );
   }

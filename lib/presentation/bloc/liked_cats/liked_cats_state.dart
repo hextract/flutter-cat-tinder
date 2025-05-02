@@ -17,12 +17,12 @@ class LikedCatsState extends Equatable {
   });
 
   factory LikedCatsState.initial() => const LikedCatsState(
-    cats: [],
-    availableBreeds: [],
-    selectedBreed: null,
-    error: null,
-    isLoading: false,
-  );
+        cats: [],
+        availableBreeds: [],
+        selectedBreed: null,
+        error: null,
+        isLoading: false,
+      );
 
   LikedCatsState copyWith({
     List<Cat>? cats,
@@ -42,10 +42,10 @@ class LikedCatsState extends Equatable {
 
   @override
   List<Object?> get props => [
-    cats,
-    availableBreeds,
-    selectedBreed,
-    error,
-    isLoading,
-  ];
+        cats,
+        availableBreeds,
+        selectedBreed,
+        error,
+        isLoading,
+      ];
 }

@@ -41,7 +41,7 @@ class CatList extends StatelessWidget {
                 return true;
               },
               numberOfCardsDisplayed:
-              state.cats.length >= 3 ? 3 : state.cats.length,
+                  state.cats.length >= 3 ? 3 : state.cats.length,
               backCardOffset: const Offset(40, 40),
               scale: 0.9,
               cardBuilder: (context, index, _, __) => GestureDetector(

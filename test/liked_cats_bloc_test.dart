@@ -9,6 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockManageLikedCats extends Mock implements ManageLikedCats {}
+
 class MockGetBreeds extends Mock implements GetBreeds {}
 
 void main() {

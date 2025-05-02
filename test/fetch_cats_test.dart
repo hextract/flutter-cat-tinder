@@ -42,8 +42,9 @@ void main() {
           .thenThrow(ServerException('API error'));
 
       expect(
-            () => fetchCats(),
-        throwsA(isA<ServerException>().having((e) => e.message, 'message', 'API error')),
+        () => fetchCats(),
+        throwsA(isA<ServerException>()
+            .having((e) => e.message, 'message', 'API error')),
       );
       verify(() => mockRepository.fetchCats()).called(1);
     });

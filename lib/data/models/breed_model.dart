@@ -41,11 +41,11 @@ class BreedModel extends Equatable {
 
   @override
   List<Object?> get props => [
-    name,
-    description,
-    origin,
-    temperament,
-    lifeSpan,
-    weight,
-  ];
+        name,
+        description,
+        origin,
+        temperament,
+        lifeSpan,
+        weight,
+      ];
 }

@@ -17,7 +17,8 @@ class CatRepositoryImpl implements CatRepository {
   int _page = 0;
   List<Cat> _likedCats;
 
-  CatRepositoryImpl(this._prefs) : _likedCats = _loadLikedCatsFromPrefsSync(_prefs);
+  CatRepositoryImpl(this._prefs)
+      : _likedCats = _loadLikedCatsFromPrefsSync(_prefs);
 
   static List<Cat> _loadLikedCatsFromPrefsSync(SharedPreferences prefs) {
     final jsonString = prefs.getString(_likedCatsKey);
@@ -32,10 +33,12 @@ class CatRepositoryImpl implements CatRepository {
         final cats = decoded
             .map((json) => Cat.fromJson(json as Map<String, dynamic>))
             .toList();
-        debugPrint('CatRepository: Loaded ${cats.length} liked cats from SharedPreferences');
+        debugPrint(
+            'CatRepository: Loaded ${cats.length} liked cats from SharedPreferences');
         return cats.take(_maxLikedCats).toList();
       } else {
-        debugPrint('CatRepository: Invalid liked cats JSON format, clearing cache');
+        debugPrint(
+            'CatRepository: Invalid liked cats JSON format, clearing cache');
         prefs.remove(_likedCatsKey);
         return [];
       }
@@ -47,14 +50,17 @@ class CatRepositoryImpl implements CatRepository {
   }
 
   Future<void> _saveLikedCatsToPrefs() async {
-    debugPrint('CatRepository: Saving ${_likedCats.length} liked cats to SharedPreferences');
+    debugPrint(
+        'CatRepository: Saving ${_likedCats.length} liked cats to SharedPreferences');
     try {
       await _prefs.setString(
         _likedCatsKey,
-        jsonEncode(_likedCats.take(_maxLikedCats).map((c) => c.toJson()).toList()),
+        jsonEncode(
+            _likedCats.take(_maxLikedCats).map((c) => c.toJson()).toList()),
       );
     } catch (e) {
-      debugPrint('CatRepository: Error saving liked cats to SharedPreferences: $e');
+      debugPrint(
+          'CatRepository: Error saving liked cats to SharedPreferences: $e');
     }
   }
 
@@ -62,7 +68,8 @@ class CatRepositoryImpl implements CatRepository {
   Future<List<Cat>> fetchCats() async {
     debugPrint('CatRepository: fetchCats called, page: $_page');
     final connectivityResult = await Connectivity().checkConnectivity();
-    final isOnline = connectivityResult.any((r) => r != ConnectivityResult.none);
+    final isOnline =
+        connectivityResult.any((r) => r != ConnectivityResult.none);
     debugPrint('CatRepository: isOnline: $isOnline');
 
     if (!isOnline) {
@@ -87,7 +94,8 @@ class CatRepositoryImpl implements CatRepository {
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
       final List<Cat> cats = data
-          .map((json) => CatModel.fromJson(json as Map<String, dynamic>).toCat())
+          .map(
+              (json) => CatModel.fromJson(json as Map<String, dynamic>).toCat())
           .toList();
       debugPrint('CatRepository: Fetched ${cats.length} cats');
       _page++;
@@ -113,7 +121,8 @@ class CatRepositoryImpl implements CatRepository {
         _likedCats.removeAt(0);
       }
       await _saveLikedCatsToPrefs();
-      debugPrint('CatRepository: Liked cat added, total liked: ${_likedCats.length}');
+      debugPrint(
+          'CatRepository: Liked cat added, total liked: ${_likedCats.length}');
     }
   }
 
@@ -129,6 +138,7 @@ class CatRepositoryImpl implements CatRepository {
     debugPrint('CatRepository: Removing liked cat: $catId');
     _likedCats.removeWhere((c) => c.id == catId);
     await _saveLikedCatsToPrefs();
-    debugPrint('CatRepository: Liked cat removed, total liked: ${_likedCats.length}');
+    debugPrint(
+        'CatRepository: Liked cat removed, total liked: ${_likedCats.length}');
   }
 }

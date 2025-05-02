@@ -60,7 +60,8 @@ void main() {
         act: (bloc) => bloc.add(FetchCatsEvent()),
         expect: () => [
           HomeState(cats: [], isLoadingMore: true, error: null),
-          HomeState(cats: [], isLoadingMore: false, error: 'API key is missing'),
+          HomeState(
+              cats: [], isLoadingMore: false, error: 'API key is missing'),
         ],
         verify: (_) => verify(() => mockFetchCats()).called(1),
       );
@@ -85,13 +86,16 @@ void main() {
         'loads more cats when threshold is reached',
         build: () {
           when(() => mockFetchCats()).thenAnswer((_) async => [cat]);
-          homeBloc.emit(HomeState(cats: List.filled(8, cat), isLoadingMore: false, error: null));
+          homeBloc.emit(HomeState(
+              cats: List.filled(8, cat), isLoadingMore: false, error: null));
           return homeBloc;
         },
         act: (bloc) => bloc.add(CheckLoadMoreEvent(7)),
         expect: () => [
-          HomeState(cats: List.filled(8, cat), isLoadingMore: true, error: null),
-          HomeState(cats: List.filled(9, cat), isLoadingMore: false, error: null),
+          HomeState(
+              cats: List.filled(8, cat), isLoadingMore: true, error: null),
+          HomeState(
+              cats: List.filled(9, cat), isLoadingMore: false, error: null),
         ],
         verify: (_) => verify(() => mockFetchCats()).called(1),
       );
@@ -99,7 +103,8 @@ void main() {
       blocTest<HomeBloc, HomeState>(
         'does not load more cats when threshold is not reached',
         build: () {
-          homeBloc.emit(HomeState(cats: List.filled(8, cat), isLoadingMore: false, error: null));
+          homeBloc.emit(HomeState(
+              cats: List.filled(8, cat), isLoadingMore: false, error: null));
           return homeBloc;
         },
         act: (bloc) => bloc.add(CheckLoadMoreEvent(5)),
@@ -112,13 +117,18 @@ void main() {
         build: () {
           when(() => mockFetchCats())
               .thenThrow(ServerException('Failed to load more cats'));
-          homeBloc.emit(HomeState(cats: List.filled(8, cat), isLoadingMore: false, error: null));
+          homeBloc.emit(HomeState(
+              cats: List.filled(8, cat), isLoadingMore: false, error: null));
           return homeBloc;
         },
         act: (bloc) => bloc.add(CheckLoadMoreEvent(7)),
         expect: () => [
-          HomeState(cats: List.filled(8, cat), isLoadingMore: true, error: null),
-          HomeState(cats: List.filled(8, cat), isLoadingMore: false, error: 'Failed to load more cats'),
+          HomeState(
+              cats: List.filled(8, cat), isLoadingMore: true, error: null),
+          HomeState(
+              cats: List.filled(8, cat),
+              isLoadingMore: false,
+              error: 'Failed to load more cats'),
         ],
         verify: (_) => verify(() => mockFetchCats()).called(1),
       );

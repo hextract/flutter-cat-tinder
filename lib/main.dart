@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter/foundation.dart' show debugPrint;
 import 'core/di/di.dart';
 import 'core/theme/app_theme.dart';
 import 'presentation/bloc/liked_cats/liked_cats_bloc.dart';

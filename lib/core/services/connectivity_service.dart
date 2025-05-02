@@ -19,6 +19,11 @@ class ConnectivityService {
     _isInitialized = true;
     debugPrint('ConnectivityService: Initializing...');
 
+    // Store ScaffoldMessenger and theme colors before async operations
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final errorColor = Theme.of(context).colorScheme.error;
+    final secondaryColor = Theme.of(context).colorScheme.secondary;
+
     if (kIsWeb) {
       debugPrint('ConnectivityService: Running on web, assuming wifi');
       _lastConnectivityResult = [ConnectivityResult.wifi];
@@ -30,52 +35,50 @@ class ConnectivityService {
       final result = await Connectivity()
           .checkConnectivity()
           .timeout(const Duration(seconds: 5), onTimeout: () {
-        debugPrint('ConnectivityService: Timeout checking initial connectivity');
+        debugPrint(
+            'ConnectivityService: Timeout checking initial connectivity');
         return [ConnectivityResult.none];
       });
       debugPrint('ConnectivityService: Initial connectivity result: $result');
       _lastConnectivityResult = result;
-      if (context.mounted) {
-        onFetchCats();
-      } else {
-        debugPrint('ConnectivityService: Context not mounted, skipping onFetchCats');
-      }
+      onFetchCats();
     } catch (e) {
-      debugPrint('ConnectivityService: Error checking initial connectivity: $e');
+      debugPrint(
+          'ConnectivityService: Error checking initial connectivity: $e');
       _lastConnectivityResult = [ConnectivityResult.none];
-      if (context.mounted) {
-        onFetchCats();
-      }
+      onFetchCats();
     }
 
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
     _subscription = Connectivity().onConnectivityChanged.listen((result) {
       final isOffline = result.every((r) => r == ConnectivityResult.none);
       final wasOffline =
           _lastConnectivityResult?.every((r) => r == ConnectivityResult.none) ??
               false;
 
-      debugPrint('ConnectivityService: Connectivity changed: $result, isOffline: $isOffline, wasOffline: $wasOffline');
+      debugPrint(
+          'ConnectivityService: Connectivity changed: $result, isOffline: $isOffline, wasOffline: $wasOffline');
 
-      if (isOffline && !wasOffline && context.mounted) {
-        debugPrint('ConnectivityService: Showing "No internet connection" snackbar');
+      if (isOffline && !wasOffline) {
+        debugPrint(
+            'ConnectivityService: Showing "No internet connection" snackbar');
         scaffoldMessenger.clearSnackBars();
         scaffoldMessenger.showSnackBar(
           SnackBar(
             content: const Text('No internet connection.'),
-            backgroundColor: Theme.of(context).colorScheme.error,
+            backgroundColor: errorColor,
             duration: const Duration(seconds: 3),
           ),
         );
         _lastConnectivityResult = result;
         onFetchCats();
-      } else if (wasOffline && !isOffline && context.mounted) {
-        debugPrint('ConnectivityService: Showing "Internet connection restored" snackbar');
+      } else if (wasOffline && !isOffline) {
+        debugPrint(
+            'ConnectivityService: Showing "Internet connection restored" snackbar');
         scaffoldMessenger.clearSnackBars();
         scaffoldMessenger.showSnackBar(
           SnackBar(
             content: const Text('Internet connection restored.'),
-            backgroundColor: Theme.of(context).colorScheme.secondary,
+            backgroundColor: secondaryColor,
             duration: const Duration(seconds: 3),
           ),
         );
@@ -94,7 +97,9 @@ class ConnectivityService {
   }
 
   bool isOffline() {
-    final offline = _lastConnectivityResult?.every((r) => r == ConnectivityResult.none) ?? true;
+    final offline =
+        _lastConnectivityResult?.every((r) => r == ConnectivityResult.none) ??
+            true;
     debugPrint('ConnectivityService: isOffline: $offline');
     return offline;
   }

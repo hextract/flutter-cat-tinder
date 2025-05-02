@@ -26,7 +26,7 @@ class HomeBody extends StatelessWidget {
             SnackBar(
               content: Text(
                 state.error == 'API key is missing' ||
-                    state.error == 'Invalid or missing API key'
+                        state.error == 'Invalid or missing API key'
                     ? 'Please check your API key'
                     : state.error!,
               ),

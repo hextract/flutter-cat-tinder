@@ -21,9 +21,9 @@ class EmptyState extends StatelessWidget {
             isOffline
                 ? 'No internet connection.\nYou can view liked cats.'
                 : state.error ??
-                'No cats available.\nPlease connect to the internet.',
+                    'No cats available.\nPlease connect to the internet.',
             style:
-            Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 18),
+                Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 18),
             textAlign: TextAlign.center,
           ),
           if (state.error != null)

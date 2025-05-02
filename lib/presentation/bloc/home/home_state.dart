@@ -13,10 +13,10 @@ class HomeState extends Equatable {
   });
 
   factory HomeState.initial() => const HomeState(
-    cats: [],
-    isLoadingMore: false,
-    error: null,
-  );
+        cats: [],
+        isLoadingMore: false,
+        error: null,
+      );
 
   HomeState copyWith({
     List<Cat>? cats,

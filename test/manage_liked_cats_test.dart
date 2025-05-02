@@ -59,7 +59,8 @@ void main() {
       verify(() => mockRepository.getLikedCats()).called(2);
     });
 
-    testWidgets('updates like count on initialization', (WidgetTester tester) async {
+    testWidgets('updates like count on initialization',
+        (WidgetTester tester) async {
       reset(mockRepository);
       when(() => mockRepository.getLikedCats()).thenAnswer((_) async => [cat]);
 

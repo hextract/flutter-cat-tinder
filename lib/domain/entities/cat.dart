@@ -69,14 +69,14 @@ class Cat extends Equatable {
 
   @override
   List<Object?> get props => [
-    id,
-    url,
-    breedName,
-    breedDescription,
-    origin,
-    temperament,
-    lifeSpan,
-    weight,
-    likedAt,
-  ];
+        id,
+        url,
+        breedName,
+        breedDescription,
+        origin,
+        temperament,
+        lifeSpan,
+        weight,
+        likedAt,
+      ];
 }
