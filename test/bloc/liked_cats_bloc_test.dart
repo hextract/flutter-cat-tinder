@@ -1,12 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:bloc_test/bloc_test.dart';
-import '../../lib/domain/entities/cat.dart';
-import '../../lib/domain/usecases/manage_liked_cats.dart';
-import '../../lib/domain/usecases/get_breeds.dart';
-import '../../lib/presentation/bloc/liked_cats/liked_cats_bloc.dart';
-import '../../lib/presentation/bloc/liked_cats/liked_cats_event.dart';
-import '../../lib/presentation/bloc/liked_cats/liked_cats_state.dart';
+import 'package:cat_tinder/domain/entities/cat.dart';
+import 'package:cat_tinder/domain/usecases/manage_liked_cats.dart';
+import 'package:cat_tinder/domain/usecases/get_breeds.dart';
+import 'package:cat_tinder/presentation/bloc/liked_cats/liked_cats_bloc.dart';
+import 'package:cat_tinder/presentation/bloc/liked_cats/liked_cats_event.dart';
+import 'package:cat_tinder/presentation/bloc/liked_cats/liked_cats_state.dart';
 
 class MockManageLikedCats extends Mock implements ManageLikedCats {}
 

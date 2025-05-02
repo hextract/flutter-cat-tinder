@@ -20,7 +20,7 @@ class CatRepositoryImpl implements CatRepository {
   @override
   Future<List<Cat>> fetchCats() async {
     final connectivityResult = await Connectivity().checkConnectivity();
-    final isOnline = connectivityResult != ConnectivityResult.none;
+    final isOnline = connectivityResult.any((r) => r != ConnectivityResult.none);
 
     if (isOnline) {
       try {
@@ -38,7 +38,7 @@ class CatRepositoryImpl implements CatRepository {
               .map((json) => CatModel.fromJson(json as Map<String, dynamic>).toCat())
               .toList();
           _page++;
-          await _catDatabase.saveCats(cats);
+          // Не сохраняем котиков в CatDatabase
           return cats;
         } else if (response.statusCode == 404) {
           throw Exception('API endpoint not found. Please check the URL or API key.');
@@ -48,10 +48,10 @@ class CatRepositoryImpl implements CatRepository {
           throw Exception('Failed to load cats: ${response.statusCode}');
         }
       } catch (e) {
-        return await _catDatabase.getCats();
+        return [];
       }
     } else {
-      return await _catDatabase.getCats();
+      return [];
     }
   }
 

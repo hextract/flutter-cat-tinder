@@ -23,26 +23,18 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final _swiperController = CardSwiperController();
-  bool _wasOffline = false;
+  List<ConnectivityResult>? _lastConnectivityResult;
 
   Future<void> _checkConnectivity(BuildContext blocContext) async {
     if (kIsWeb) {
+      _lastConnectivityResult = [ConnectivityResult.wifi]; // Для веба считаем онлайн
       blocContext.read<HomeBloc>().add(FetchCatsEvent());
       return;
     }
     final result = await Connectivity().checkConnectivity();
-    _wasOffline = result == ConnectivityResult.none;
-    if (_wasOffline && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'No internet connection. Showing offline cats.',
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          backgroundColor: Theme.of(context).colorScheme.error,
-          duration: const Duration(seconds: 3),
-        ),
-      );
+    _lastConnectivityResult = result;
+    final isOffline = result.every((r) => r == ConnectivityResult.none);
+    if (isOffline && mounted) {
       blocContext.read<HomeBloc>().add(FetchCatsEvent());
     } else if (mounted) {
       blocContext.read<HomeBloc>().add(FetchCatsEvent());
@@ -67,23 +59,26 @@ class _HomeScreenState extends State<HomeScreen> {
           });
           if (!kIsWeb) {
             Connectivity().onConnectivityChanged.listen((result) {
-              if (result == ConnectivityResult.none) {
+              final isOffline = result.every((r) => r == ConnectivityResult.none);
+              final wasOffline = _lastConnectivityResult?.every((r) => r == ConnectivityResult.none) ?? false;
+              if (isOffline && !wasOffline) {
                 if (mounted) {
-                  _wasOffline = true;
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
-                        'No internet connection. Showing offline cats.',
+                        'No internet connection.',
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       backgroundColor: Theme.of(context).colorScheme.error,
                       duration: const Duration(seconds: 3),
                     ),
                   );
+                }
+                _lastConnectivityResult = result;
+                if (mounted) {
                   blocContext.read<HomeBloc>().add(FetchCatsEvent());
                 }
-              } else if (_wasOffline && mounted) {
-                _wasOffline = false;
+              } else if (wasOffline && !isOffline && mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
@@ -94,7 +89,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     duration: const Duration(seconds: 3),
                   ),
                 );
+                _lastConnectivityResult = result;
                 blocContext.read<HomeBloc>().add(FetchCatsEvent());
+              } else {
+                _lastConnectivityResult = result;
               }
             });
           }
@@ -145,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ? 'Failed to connect to the Cat API. Please check your API key or internet connection.'
                     : state.error == 'Invalid or missing API key. Please verify your API key.'
                     ? 'Please provide a valid API key for accessing breed information.'
-                    : 'Unable to load cats. Showing offline cats.',
+                    : 'Unable to load cats.',
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               backgroundColor: Theme.of(context).colorScheme.error,
@@ -155,30 +153,43 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       },
       builder: (context, state) {
-        if (state.cats.isEmpty) {
-          return _buildEmptyState(state, context);
+        final isOffline = _lastConnectivityResult?.every((r) => r == ConnectivityResult.none) ?? false && !kIsWeb;
+        if (isOffline || (state.cats.isEmpty && !state.isLoadingMore)) {
+          return _buildEmptyState(state, context, isOffline);
         }
-        return _buildCatList(context, state);
+        return state.cats.isEmpty ? _buildLoadingState() : _buildCatList(context, state);
       },
     );
   }
 
-  Widget _buildEmptyState(HomeState state, BuildContext context) {
+  Widget _buildLoadingState() {
+    return const Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+
+  Widget _buildEmptyState(HomeState state, BuildContext context, bool isOffline) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            state.isLoadingMore
-                ? 'Loading cats...'
+            isOffline
+                ? 'No internet connection.\nYou can view liked cats.'
                 : 'No cats available. Please connect to the internet to load cats.',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 18),
             textAlign: TextAlign.center,
           ),
-          if (state.isLoadingMore)
-            const Padding(
-              padding: EdgeInsets.only(top: 16),
-              child: CircularProgressIndicator(),
+          if (isOffline)
+            Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: ElevatedButton(
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LikedCatsScreen()),
+                ),
+                child: const Text('View Liked Cats'),
+              ),
             ),
         ],
       ),

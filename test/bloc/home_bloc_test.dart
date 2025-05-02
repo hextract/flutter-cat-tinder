@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:bloc_test/bloc_test.dart';
-import '../../lib/domain/entities/cat.dart';
-import '../../lib/domain/usecases/fetch_cats.dart';
-import '../../lib/presentation/bloc/home/home_bloc.dart';
-import '../../lib/presentation/bloc/home/home_event.dart';
-import '../../lib/presentation/bloc/home/home_state.dart';
+import 'package:cat_tinder/domain/entities/cat.dart';
+import 'package:cat_tinder/domain/usecases/fetch_cats.dart';
+import 'package:cat_tinder/presentation/bloc/home/home_bloc.dart';
+import 'package:cat_tinder/presentation/bloc/home/home_event.dart';
+import 'package:cat_tinder/presentation/bloc/home/home_state.dart';
 
 class MockFetchCats extends Mock implements FetchCats {}
 
