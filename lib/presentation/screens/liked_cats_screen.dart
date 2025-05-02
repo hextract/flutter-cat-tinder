@@ -15,8 +15,6 @@ class LikedCatsScreen extends StatefulWidget {
 }
 
 class _LikedCatsScreenState extends State<LikedCatsScreen> {
-  bool _isLoading = true;
-
   @override
   void initState() {
     super.initState();
@@ -41,8 +39,15 @@ class _LikedCatsScreenState extends State<LikedCatsScreen> {
                 context: context,
                 builder: (_) => AlertDialog(
                   title: const Text('Error'),
-                  content: Text(state.error!, style: Theme.of(context).textTheme.bodyLarge),
+                  content: Text(state.error!),
                   actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        context.read<LikedCatsBloc>().add(LoadLikedCatsEvent());
+                      },
+                      child: const Text('Retry'),
+                    ),
                     TextButton(
                       onPressed: () => Navigator.pop(context),
                       child: const Text('OK'),
@@ -51,18 +56,25 @@ class _LikedCatsScreenState extends State<LikedCatsScreen> {
                 ),
               );
             }
-            _isLoading = false;
           },
           builder: (context, state) {
-            if (_isLoading) {
-              return const Center(child: LinearProgressIndicator());
+            if (state.isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (state.cats.isEmpty) {
+              return const Center(child: Text('No liked cats yet'));
             }
             return Column(
               children: [
                 _BreedFilter(
-                  selectedBreed: state.availableBreeds.contains(state.selectedBreed) ? state.selectedBreed : null,
+                  selectedBreed:
+                      state.availableBreeds.contains(state.selectedBreed)
+                          ? state.selectedBreed
+                          : null,
                   availableBreeds: state.availableBreeds,
-                  onChanged: (value) => context.read<LikedCatsBloc>().add(FilterLikedCatsEvent(value)),
+                  onChanged: (value) => context
+                      .read<LikedCatsBloc>()
+                      .add(FilterLikedCatsEvent(value)),
                 ),
                 _CatList(cats: state.cats),
               ],
@@ -91,20 +103,22 @@ class _BreedFilter extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: DropdownButtonFormField<String>(
         value: selectedBreed,
-        hint: Text('Filter by breed', style: Theme.of(context).textTheme.bodyMedium),
+        hint: const Text('Filter by breed'),
         items: [
-          DropdownMenuItem(value: null, child: Text('All', style: Theme.of(context).textTheme.bodyMedium)),
+          const DropdownMenuItem(value: null, child: Text('All')),
           ...availableBreeds.map((breed) => DropdownMenuItem(
-            value: breed,
-            child: Text(
-              breed,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: selectedBreed == breed ? Theme.of(context).primaryColor : null,
-              ),
-            ),
-          )),
+                value: breed,
+                child: Text(
+                  breed,
+                  style: TextStyle(
+                    color: selectedBreed == breed
+                        ? Theme.of(context).primaryColor
+                        : null,
+                  ),
+                ),
+              )),
         ],
-        onChanged: onChanged,
+        onChanged: availableBreeds.isNotEmpty ? onChanged : null,
         decoration: InputDecoration(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
@@ -116,9 +130,9 @@ class _BreedFilter extends StatelessWidget {
           ),
           filled: true,
           fillColor: Theme.of(context).scaffoldBackgroundColor,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         ),
-        style: Theme.of(context).textTheme.bodyMedium,
       ),
     );
   }
@@ -132,25 +146,26 @@ class _CatList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: cats.isEmpty
-          ? Center(child: Text('No liked cats yet', style: Theme.of(context).textTheme.bodyLarge))
-          : ListView.builder(
+      child: ListView.builder(
         itemCount: cats.length,
         itemBuilder: (context, index) {
-          if (index >= cats.length) return const SizedBox.shrink();
           final cat = cats[index];
           return Dismissible(
             key: Key(cat.id),
             direction: DismissDirection.endToStart,
-            onDismissed: (_) => context.read<LikedCatsBloc>().add(RemoveLikedCatEvent(cat.id)),
+            onDismissed: (_) =>
+                context.read<LikedCatsBloc>().add(RemoveLikedCatEvent(cat.id)),
             background: Container(
               color: Theme.of(context).iconTheme.color,
               alignment: Alignment.centerRight,
               padding: const EdgeInsets.only(right: 20),
-              child: Icon(Icons.delete, color: Theme.of(context).scaffoldBackgroundColor),
+              child: const Icon(Icons.delete, color: Colors.white),
             ),
             child: GestureDetector(
-              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => DetailScreen(catData: cat))),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => DetailScreen(catData: cat)),
+              ),
               child: Card(
                 child: ListTile(
                   leading: ClipRRect(
@@ -168,12 +183,14 @@ class _CatList extends StatelessWidget {
                             child: CircularProgressIndicator(strokeWidth: 2),
                           ),
                         ),
-                        errorWidget: (context, url, error) => Icon(Icons.error, color: Theme.of(context).colorScheme.error),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
                       ),
                     ),
                   ),
-                  title: Text(cat.breedName, style: Theme.of(context).textTheme.bodyMedium),
-                  subtitle: Text('Liked: ${cat.likedAt!.toString().substring(0, 16)}', style: Theme.of(context).textTheme.bodyLarge),
+                  title: Text(cat.breedName),
+                  subtitle: Text(
+                      'Liked: ${cat.likedAt!.toString().substring(0, 16)}'),
                 ),
               ),
             ),

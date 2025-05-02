@@ -1,38 +1,63 @@
+import 'package:cat_tinder/core/error/exceptions.dart';
+import 'package:cat_tinder/domain/usecases/fetch_cats.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../domain/usecases/fetch_cats.dart';
 import 'home_event.dart';
 import 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  final FetchCats _fetchCats;
+  final FetchCats fetchCats;
+  static const int _threshold = 2;
 
-  HomeBloc(this._fetchCats) : super(HomeState.initial()) {
+  HomeBloc(this.fetchCats) : super(HomeState.initial()) {
     on<FetchCatsEvent>(_onFetchCats);
     on<CheckLoadMoreEvent>(_onCheckLoadMore);
-    add(FetchCatsEvent());
   }
 
   Future<void> _onFetchCats(
       FetchCatsEvent event, Emitter<HomeState> emit) async {
-    emit(state.copyWith(isLoadingMore: true));
+    debugPrint('HomeBloc: Handling FetchCatsEvent');
+    if (state.isLoadingMore) {
+      debugPrint('HomeBloc: Already loading, skipping fetch');
+      return;
+    }
+    emit(state.copyWith(isLoadingMore: true, error: null));
     try {
-      final newCats = await _fetchCats();
+      final cats = await fetchCats();
+      debugPrint('HomeBloc: Fetched ${cats.length} cats');
       emit(state.copyWith(
-        cats: [...state.cats, ...newCats],
+        cats: [...state.cats, ...cats],
         isLoadingMore: false,
-        error: null,
       ));
     } catch (e) {
-      emit(state.copyWith(
-        isLoadingMore: false,
-        error: 'Failed to load cats: $e',
-      ));
+      final errorMessage =
+          e is ServerException ? e.message : 'Failed to fetch cats';
+      debugPrint('HomeBloc: Error fetching cats: $errorMessage');
+      emit(state.copyWith(isLoadingMore: false, error: errorMessage));
     }
   }
 
-  void _onCheckLoadMore(CheckLoadMoreEvent event, Emitter<HomeState> emit) {
-    if (event.currentIndex >= state.cats.length - 3 && !state.isLoadingMore) {
-      add(FetchCatsEvent());
+  Future<void> _onCheckLoadMore(
+      CheckLoadMoreEvent event, Emitter<HomeState> emit) async {
+    debugPrint(
+        'HomeBloc: Handling CheckLoadMoreEvent, currentIndex: ${event.currentIndex}');
+    if (event.currentIndex >= state.cats.length - _threshold &&
+        !state.isLoadingMore) {
+      debugPrint('HomeBloc: Loading more cats');
+      emit(state.copyWith(isLoadingMore: true, error: null));
+      try {
+        final newCats = await fetchCats();
+        debugPrint('HomeBloc: Loaded ${newCats.length} new cats');
+        emit(state.copyWith(
+          cats: [...state.cats, ...newCats],
+          isLoadingMore: false,
+        ));
+      } catch (e) {
+        final errorMessage =
+            e is ServerException ? e.message : 'Failed to load more cats';
+        debugPrint('HomeBloc: Error loading more cats: $errorMessage');
+        emit(state.copyWith(isLoadingMore: false, error: errorMessage));
+      }
     }
   }
 }

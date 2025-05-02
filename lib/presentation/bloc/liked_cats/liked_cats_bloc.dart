@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../domain/usecases/manage_liked_cats.dart';
-import '../../../domain/usecases/get_breeds.dart';
+import '../../../../core/error/exceptions.dart';
+import '../../../../domain/usecases/get_breeds.dart';
+import '../../../../domain/usecases/manage_liked_cats.dart';
 import 'liked_cats_event.dart';
 import 'liked_cats_state.dart';
 
@@ -15,61 +16,78 @@ class LikedCatsBloc extends Bloc<LikedCatsEvent, LikedCatsState> {
     on<RemoveLikedCatEvent>(_onRemoveLikedCat);
   }
 
-  void _onLoadLikedCats(
-      LoadLikedCatsEvent event, Emitter<LikedCatsState> emit) {
+  Future<void> _onLoadLikedCats(
+      LoadLikedCatsEvent event, Emitter<LikedCatsState> emit) async {
+    emit(state.copyWith(isLoading: true, error: null));
     try {
-      final cats = _manageLikedCats.getLikedCats();
-      emit(LikedCatsState(
+      final cats = await _manageLikedCats.getLikedCats();
+      final breeds = await _getBreeds();
+      emit(state.copyWith(
         cats: cats,
-        availableBreeds: _getBreeds(cats),
-        selectedBreed: null,
+        availableBreeds: breeds,
+        isLoading: false,
         error: null,
       ));
     } catch (e) {
-      emit(state.copyWith(error: 'Failed to load liked cats: $e'));
+      final errorMessage =
+          e is ServerException ? e.message : 'Failed to load liked cats';
+      emit(state.copyWith(
+        isLoading: false,
+        error: errorMessage,
+      ));
     }
   }
 
-  void _onFilterLikedCats(
-      FilterLikedCatsEvent event, Emitter<LikedCatsState> emit) {
+  Future<void> _onFilterLikedCats(
+      FilterLikedCatsEvent event, Emitter<LikedCatsState> emit) async {
+    emit(state.copyWith(isLoading: true, error: null));
+    final selectedBreed = event.breed;
     try {
-      final allCats = _manageLikedCats.getLikedCats();
-      final filteredCats =
-          _manageLikedCats.getLikedCats(breedFilter: event.breed);
+      final cats = await _manageLikedCats.getLikedCats();
+      final filteredCats = selectedBreed == null ||
+              !state.availableBreeds.contains(selectedBreed)
+          ? cats
+          : cats.where((cat) => cat.breedName == selectedBreed).toList();
       emit(state.copyWith(
         cats: filteredCats,
-        availableBreeds: _getBreeds(allCats),
-        selectedBreed: event.breed,
+        selectedBreed: selectedBreed,
+        isLoading: false,
         error: null,
       ));
     } catch (e) {
-      emit(state.copyWith(error: 'Failed to filter liked cats: $e'));
+      final errorMessage =
+          e is ServerException ? e.message : 'Failed to filter liked cats';
+      emit(state.copyWith(
+        isLoading: false,
+        error: errorMessage,
+      ));
     }
   }
 
-  void _onRemoveLikedCat(
-      RemoveLikedCatEvent event, Emitter<LikedCatsState> emit) {
+  Future<void> _onRemoveLikedCat(
+      RemoveLikedCatEvent event, Emitter<LikedCatsState> emit) async {
+    emit(state.copyWith(isLoading: true, error: null));
     try {
-      _manageLikedCats.removeLikedCat(event.id);
-      final allCats = _manageLikedCats.getLikedCats();
-      final availableBreeds = _getBreeds(allCats);
-      final filteredCats =
-          _manageLikedCats.getLikedCats(breedFilter: state.selectedBreed);
-      final selectedBreed = availableBreeds.contains(state.selectedBreed) &&
-              filteredCats.isNotEmpty
-          ? state.selectedBreed
-          : null;
-
+      await _manageLikedCats.removeLikedCat(event.id);
+      final cats = await _manageLikedCats.getLikedCats();
+      final breeds = await _getBreeds();
+      final filteredCats = state.selectedBreed == null ||
+              !breeds.contains(state.selectedBreed)
+          ? cats
+          : cats.where((cat) => cat.breedName == state.selectedBreed).toList();
       emit(state.copyWith(
-        cats: filteredCats.isEmpty && selectedBreed == null
-            ? allCats
-            : filteredCats,
-        availableBreeds: availableBreeds,
-        selectedBreed: selectedBreed,
+        cats: filteredCats,
+        availableBreeds: breeds,
+        isLoading: false,
         error: null,
       ));
     } catch (e) {
-      emit(state.copyWith(error: 'Failed to remove liked cat: $e'));
+      final errorMessage =
+          e is ServerException ? e.message : 'Failed to remove liked cat';
+      emit(state.copyWith(
+        isLoading: false,
+        error: errorMessage,
+      ));
     }
   }
 }

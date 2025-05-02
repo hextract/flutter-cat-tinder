@@ -13,10 +13,15 @@ final getIt = GetIt.instance;
 Future<void> setupDependencies() async {
   final prefs = await SharedPreferences.getInstance();
   getIt.registerSingleton<SharedPreferences>(prefs);
-  getIt.registerLazySingleton<domain.CatRepository>(() => CatRepositoryImpl());
-  getIt.registerLazySingleton<FetchCats>(() => FetchCats(getIt<domain.CatRepository>()));
-  getIt.registerLazySingleton<ManageLikedCats>(() => ManageLikedCats(getIt<domain.CatRepository>()));
-  getIt.registerLazySingleton<GetBreeds>(() => GetBreeds(getIt<domain.CatRepository>()));
+  getIt.registerLazySingleton<domain.CatRepository>(
+      () => CatRepositoryImpl(getIt<SharedPreferences>()));
+  getIt.registerLazySingleton<FetchCats>(
+      () => FetchCats(getIt<domain.CatRepository>()));
+  getIt.registerLazySingleton<ManageLikedCats>(
+      () => ManageLikedCats(getIt<domain.CatRepository>()));
+  getIt.registerLazySingleton<GetBreeds>(
+      () => GetBreeds(getIt<domain.CatRepository>()));
   getIt.registerFactory<HomeBloc>(() => HomeBloc(getIt<FetchCats>()));
-  getIt.registerFactory<LikedCatsBloc>(() => LikedCatsBloc(getIt<ManageLikedCats>(), getIt<GetBreeds>()));
+  getIt.registerFactory<LikedCatsBloc>(
+      () => LikedCatsBloc(getIt<ManageLikedCats>(), getIt<GetBreeds>()));
 }

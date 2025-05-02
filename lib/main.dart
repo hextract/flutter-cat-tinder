@@ -7,8 +7,21 @@ import 'presentation/bloc/liked_cats/liked_cats_bloc.dart';
 import 'presentation/screens/home_screen.dart';
 
 Future<void> main() async {
-  await dotenv.load(fileName: ".env");
-  await setupDependencies();
+  WidgetsFlutterBinding.ensureInitialized();
+  try {
+    await dotenv.load(fileName: ".env");
+    debugPrint('main: .env file loaded successfully');
+  } catch (e) {
+    debugPrint('main: Error loading .env: $e');
+  }
+
+  try {
+    await setupDependencies();
+    debugPrint('main: Dependencies initialized successfully');
+  } catch (e) {
+    debugPrint('main: Error initializing dependencies: $e');
+  }
+
   runApp(const CatTinderApp());
 }
 
@@ -22,7 +35,7 @@ class CatTinderApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Cat Tinder',
         theme: AppTheme.lightTheme,
-        home: HomeScreen(),
+        home: const HomeScreen(),
       ),
     );
   }

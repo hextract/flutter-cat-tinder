@@ -1,17 +1,18 @@
+import 'package:equatable/equatable.dart';
 import '../../../domain/entities/cat.dart';
 
-class HomeState {
+class HomeState extends Equatable {
   final List<Cat> cats;
   final bool isLoadingMore;
   final String? error;
 
-  HomeState({
+  const HomeState({
     required this.cats,
     required this.isLoadingMore,
     this.error,
   });
 
-  factory HomeState.initial() => HomeState(
+  factory HomeState.initial() => const HomeState(
         cats: [],
         isLoadingMore: false,
         error: null,
@@ -28,4 +29,7 @@ class HomeState {
       error: error ?? this.error,
     );
   }
+
+  @override
+  List<Object?> get props => [cats, isLoadingMore, error];
 }

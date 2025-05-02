@@ -2,7 +2,7 @@ import '../entities/cat.dart';
 
 abstract class CatRepository {
   Future<List<Cat>> fetchCats();
-  void addLikedCat(Cat cat);
-  void removeLikedCat(String id);
-  List<Cat> getLikedCats();
+  Future<void> addLikedCat(Cat cat);
+  Future<List<Cat>> getLikedCats();
+  Future<void> removeLikedCat(String catId);
 }
