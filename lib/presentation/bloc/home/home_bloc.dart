@@ -17,11 +17,18 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future<void> _onFetchCats(
       FetchCatsEvent event, Emitter<HomeState> emit) async {
     debugPrint('HomeBloc: Handling FetchCatsEvent');
+    if (state.isLoadingMore) {
+      debugPrint('HomeBloc: Already loading, skipping fetch');
+      return;
+    }
     emit(state.copyWith(isLoadingMore: true, error: null));
     try {
       final cats = await fetchCats();
       debugPrint('HomeBloc: Fetched ${cats.length} cats');
-      emit(state.copyWith(cats: cats, isLoadingMore: false));
+      emit(state.copyWith(
+        cats: [...state.cats, ...cats],
+        isLoadingMore: false,
+      ));
     } catch (e) {
       final errorMessage =
           e is ServerException ? e.message : 'Failed to fetch cats';
@@ -34,7 +41,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       CheckLoadMoreEvent event, Emitter<HomeState> emit) async {
     debugPrint(
         'HomeBloc: Handling CheckLoadMoreEvent, currentIndex: ${event.currentIndex}');
-    if (event.currentIndex >= state.cats.length - _threshold) {
+    if (event.currentIndex >= state.cats.length - _threshold &&
+        !state.isLoadingMore) {
       debugPrint('HomeBloc: Loading more cats');
       emit(state.copyWith(isLoadingMore: true, error: null));
       try {

@@ -19,7 +19,6 @@ class ConnectivityService {
     _isInitialized = true;
     debugPrint('ConnectivityService: Initializing...');
 
-    // Store ScaffoldMessenger and theme colors before async operations
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     final errorColor = Theme.of(context).colorScheme.error;
     final secondaryColor = Theme.of(context).colorScheme.secondary;
@@ -41,12 +40,13 @@ class ConnectivityService {
       });
       debugPrint('ConnectivityService: Initial connectivity result: $result');
       _lastConnectivityResult = result;
-      onFetchCats();
+      if (result.any((r) => r != ConnectivityResult.none)) {
+        onFetchCats();
+      }
     } catch (e) {
       debugPrint(
           'ConnectivityService: Error checking initial connectivity: $e');
       _lastConnectivityResult = [ConnectivityResult.none];
-      onFetchCats();
     }
 
     _subscription = Connectivity().onConnectivityChanged.listen((result) {
@@ -70,7 +70,6 @@ class ConnectivityService {
           ),
         );
         _lastConnectivityResult = result;
-        onFetchCats();
       } else if (wasOffline && !isOffline) {
         debugPrint(
             'ConnectivityService: Showing "Internet connection restored" snackbar');
