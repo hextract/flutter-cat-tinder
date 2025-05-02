@@ -21,7 +21,7 @@ class CatCard extends StatelessWidget {
             height: double.infinity,
             fit: BoxFit.cover,
             placeholder: (context, url) =>
-            const Center(child: CircularProgressIndicator()),
+                const Center(child: CircularProgressIndicator()),
             errorWidget: (context, url, error) => Icon(
               Icons.error,
               color: Theme.of(context).colorScheme.error,
@@ -49,18 +49,18 @@ class CatCard extends StatelessWidget {
                   Text(
                     cat.breedName,
                     style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                      fontSize: 18,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                          fontSize: 18,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                   if (cat.temperament.isNotEmpty)
                     Text(
                       cat.temperament,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontSize: 14,
-                        color: Colors.white70,
-                      ),
+                            fontSize: 14,
+                            color: Colors.white70,
+                          ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),

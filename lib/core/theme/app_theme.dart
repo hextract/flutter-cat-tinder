@@ -80,11 +80,11 @@ class AppTheme {
           fontFamily: 'Poppins',
         ),
       ),
-      colorScheme: ColorScheme.fromSwatch().copyWith(
+      colorScheme: ColorScheme.light(
         primary: const Color(0xFF1976D2),
         secondary: const Color(0xFF64B5F6),
         error: const Color(0xFFEF5350),
-        surface: Colors.grey[200],
+        surface: Colors.grey[200]!,
       ),
     );
   }

@@ -5,32 +5,37 @@ class LikedCatsState {
   final List<String> availableBreeds;
   final String? selectedBreed;
   final String? error;
+  final bool isLoading;
 
   LikedCatsState({
     required this.cats,
     required this.availableBreeds,
     this.selectedBreed,
     this.error,
+    required this.isLoading,
   });
 
   factory LikedCatsState.initial() => LikedCatsState(
-        cats: [],
-        availableBreeds: [],
-        selectedBreed: null,
-        error: null,
-      );
+    cats: [],
+    availableBreeds: [],
+    selectedBreed: null,
+    error: null,
+    isLoading: false,
+  );
 
   LikedCatsState copyWith({
     List<Cat>? cats,
     List<String>? availableBreeds,
     String? selectedBreed,
     String? error,
+    bool? isLoading,
   }) {
     return LikedCatsState(
       cats: cats ?? this.cats,
       availableBreeds: availableBreeds ?? this.availableBreeds,
       selectedBreed: selectedBreed ?? this.selectedBreed,
       error: error ?? this.error,
+      isLoading: isLoading ?? this.isLoading,
     );
   }
 }
